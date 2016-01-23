@@ -22,7 +22,7 @@ int main(void)
   /* Board and KAPI initialization. */
   Board.Initialization();
 
-  /* It includes the RTOS inicialization, then no more code is needed from this
+  /* It includes the RTOS initiialization, then no more code is needed from this
    * point */
   GPIO.Mode(LED1, OUTPUT_PULLUP);
   GPIO.Mode(LED2, OUTPUT_PULLUP);
@@ -34,6 +34,7 @@ int main(void)
   LEDS.On(LED3);
   LEDS.Off(LED4);
 
+  USBObj.Initialization();
   RTOS.Initialization();
 
   /* Infinite loop */

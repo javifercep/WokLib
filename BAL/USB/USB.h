@@ -7,29 +7,28 @@
   */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __ADC_H
-#define __ADC_H
+#ifndef __USB_H
+#define __USB_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f2xx_hal.h"
 
 /* Exported defines	  --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
 /* Exported class-------------------------------------------------------------*/
-class ADCInstance {
-private:
-	static ADC_HandleTypeDef hadc;
+class USBInstance {
+
 public:
-	ADCInstance(void);
-	~ADCInstance(void);
+	USBInstance(void);
+	~USBInstance(void);
 	void Initialization(void);
-	void Enable(unsigned int pin);
-	void Disable(unsigned int pin);
-	unsigned int Read(unsigned int pin);
+	void Configuration(unsigned int command, void* arg);
+	unsigned int Available(void);
+	unsigned int Write(char *source, unsigned int size);
+	unsigned int Read(char *destination, unsigned int size);
 };
 
 /* Exported variables	  --------------------------------------------------------*/
-extern ADCInstance ADCObj;
+extern USBInstance USBObj;
 
 
 #endif /*__ADC_H */

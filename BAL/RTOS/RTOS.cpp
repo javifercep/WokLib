@@ -8,20 +8,21 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "BAPI.h"
-#include "GPIO/GPIO.h"
-#include "LEDS/LEDS.h"
 #include "stm32f2xx_hal.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "cmsis_os.h"
+#include <string.h>
 
 /* Exported variables	  --------------------------------------------------------*/
 RTOSInstance RTOS;
 /* private variables	  --------------------------------------------------------*/
 osThreadId defaultTaskHandle;
+osThreadId CommunicationTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 void StartDefaultTask(void const * argument);
+void StartCommunicationTask(void const * argument);
 
 /* private class functions -------------------------------------------------------*/
 
@@ -38,6 +39,10 @@ void RTOSInstance::Initialization(void)
 {
    osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
    defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+
+   osThreadDef(CommunicationTask, StartCommunicationTask, osPriorityAboveNormal, 0, 512);
+   CommunicationTaskHandle = osThreadCreate(osThread(CommunicationTask), NULL);
+
 
    /* Start scheduler */
    osKernelStart(NULL, NULL);
@@ -56,6 +61,46 @@ void StartDefaultTask(void const * argument)
 	LEDS.Toggle(LED3);
 	LEDS.Toggle(LED4);
     osDelay(500);
+  }
+  /* USER CODE END StartDefaultTask */
+}
+
+
+void StartCommunicationTask(void const * argument)
+{
+  /* init code for FATFS */
+  char LoopString1[15] = "I'm Krakoski!\n";
+  char LoopString2[15] = "Hey! Woman ;)\n";
+  char KrakoskiAnswer[8] = "Hello!\n";
+  char Question[10];
+  char *CurrentString = LoopString2;
+  /* USER CODE BEGIN StartDefaultTask */
+  /* Infinite loop */
+  for(;;)
+  {
+	if (USBObj.Available() > 0)
+	{
+		USBObj.Read(Question, USBObj.Available());
+		if (strcmp(Question, "Hello!\n") != 0)
+		{
+			USBObj.Write(KrakoskiAnswer, 8);
+		}
+	}
+	else
+	{
+		if (USBObj.Write(CurrentString, 15) != 0)
+		{
+			if(CurrentString == LoopString2)
+			{
+				CurrentString = LoopString1;
+			}
+			else
+			{
+				CurrentString = LoopString2;
+			}
+		}
+	}
+    osDelay(1000);
   }
   /* USER CODE END StartDefaultTask */
 }

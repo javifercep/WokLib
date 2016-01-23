@@ -48,6 +48,8 @@
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/CMSIS_RTOS"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Device/ST/STM32F2xx/Include"/>
+									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
 								</option>
 								<inputType id="com.atollic.truestudio.as.input.45647628" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
@@ -70,6 +72,8 @@
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/CMSIS_RTOS"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Device/ST/STM32F2xx/Include"/>
+									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.1004092309" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.322522789" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F205RB" valueType="enumerated"/>
@@ -109,6 +113,8 @@
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/CMSIS_RTOS"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Device/ST/STM32F2xx/Include"/>
+									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.2045765054" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.1844582556" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F205RB" valueType="enumerated"/>
@@ -174,46 +180,52 @@
 									<listOptionValue builtIn="false" value="__cplusplus"/>
 								</option>
 								<option id="com.atollic.truestudio.as.general.incpath.2144712707" name="Include path" superClass="com.atollic.truestudio.as.general.incpath" valueType="includePath">
+									<listOptionValue builtIn="false" value="../../KAL"/>
+									<listOptionValue builtIn="false" value="../../BAL"/>
+									<listOptionValue builtIn="false" value="../../PAL"/>
+									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/STM32F2xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\FatFs\src\drivers&quot;"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/portable/GCC/ARM_CM3"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FatFs/src/"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/CMSIS_RTOS"/>
-									<listOptionValue builtIn="false" value="../../KAL"/>
-									<listOptionValue builtIn="false" value="../../BAL"/>
-									<listOptionValue builtIn="false" value="../../PAL"/>
-									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/STM32F2xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Device/ST/STM32F2xx/Include"/>
+									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\JAVIS\Documents\GitHub\WokLib\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
 								</option>
 								<inputType id="com.atollic.truestudio.as.input.2016761525" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
 							<tool id="com.atollic.truestudio.exe.release.toolchain.gcc.464737600" name="C Compiler" superClass="com.atollic.truestudio.exe.release.toolchain.gcc">
 								<option id="com.atollic.truestudio.gcc.symbols.defined.737973649" name="Defined symbols" superClass="com.atollic.truestudio.gcc.symbols.defined" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="STM32F2XX"/>
-									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
 									<listOptionValue builtIn="false" value="STM32F205xx"/>
 									<listOptionValue builtIn="false" value="USE_HAL_DRIVER"/>
 									<listOptionValue builtIn="false" value="&quot;__weak= __attribute__((weak))&quot;"/>
 									<listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))"/>
+									<listOptionValue builtIn="false" value="STM32F2XX"/>
+									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
 									<listOptionValue builtIn="false" value="__cplusplus"/>
 								</option>
 								<option id="com.atollic.truestudio.gcc.directories.select.384561027" name="Include path" superClass="com.atollic.truestudio.gcc.directories.select" valueType="includePath">
-									<listOptionValue builtIn="false" value="../src"/>
-									<listOptionValue builtIn="false" value="..\Libraries\STM32F2xx_StdPeriph_Driver\inc"/>
-									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Include"/>
-									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Device\ST\STM32F2xx\Include"/>
+									<listOptionValue builtIn="false" value="../../KAL"/>
+									<listOptionValue builtIn="false" value="../../BAL"/>
+									<listOptionValue builtIn="false" value="../../PAL"/>
+									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/STM32F2xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\FatFs\src\drivers&quot;"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/portable/GCC/ARM_CM3"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FatFs/src/"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/CMSIS_RTOS"/>
-									<listOptionValue builtIn="false" value="../../KAL"/>
-									<listOptionValue builtIn="false" value="../../BAL"/>
-									<listOptionValue builtIn="false" value="../../PAL"/>
-									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/STM32F2xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Device/ST/STM32F2xx/Include"/>
+									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
+									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="../src"/>
+									<listOptionValue builtIn="false" value="..\Libraries\STM32F2xx_StdPeriph_Driver\inc"/>
+									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Include"/>
+									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Device\ST\STM32F2xx\Include"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\JAVIS\Documents\GitHub\WokLib\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.2004471746" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.2099171077" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F205RG" valueType="enumerated"/>
@@ -236,30 +248,33 @@
 							</tool>
 							<tool id="com.atollic.truestudio.exe.release.toolchain.gpp.1119435958" name="C++ Compiler" superClass="com.atollic.truestudio.exe.release.toolchain.gpp">
 								<option id="com.atollic.truestudio.gpp.symbols.defined.447829830" name="Defined symbols" superClass="com.atollic.truestudio.gpp.symbols.defined" valueType="definedSymbols">
-									<listOptionValue builtIn="false" value="STM32F2XX"/>
-									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
 									<listOptionValue builtIn="false" value="STM32F205xx"/>
 									<listOptionValue builtIn="false" value="USE_HAL_DRIVER"/>
 									<listOptionValue builtIn="false" value="&quot;__weak= __attribute__((weak))&quot;"/>
 									<listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))"/>
+									<listOptionValue builtIn="false" value="STM32F2XX"/>
+									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
 									<listOptionValue builtIn="false" value="__cplusplus"/>
 								</option>
 								<option id="com.atollic.truestudio.gpp.directories.select.1138619782" name="Include path" superClass="com.atollic.truestudio.gpp.directories.select" valueType="includePath">
-									<listOptionValue builtIn="false" value="../src"/>
-									<listOptionValue builtIn="false" value="..\Libraries\STM32F2xx_StdPeriph_Driver\inc"/>
-									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Include"/>
-									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Device\ST\STM32F2xx\Include"/>
+									<listOptionValue builtIn="false" value="../../KAL"/>
+									<listOptionValue builtIn="false" value="../../BAL"/>
+									<listOptionValue builtIn="false" value="../../PAL"/>
+									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/STM32F2xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\FatFs\src\drivers&quot;"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/portable/GCC/ARM_CM3"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FatFs/src/"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/include"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/FreeRTOS/Source/CMSIS_RTOS"/>
-									<listOptionValue builtIn="false" value="../../KAL"/>
-									<listOptionValue builtIn="false" value="../../BAL"/>
-									<listOptionValue builtIn="false" value="../../PAL"/>
-									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/STM32F2xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Device/ST/STM32F2xx/Include"/>
+									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
+									<listOptionValue builtIn="false" value="../src"/>
+									<listOptionValue builtIn="false" value="..\Libraries\STM32F2xx_StdPeriph_Driver\inc"/>
+									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Include"/>
+									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Device\ST\STM32F2xx\Include"/>
+									<listOptionValue builtIn="false" value="&quot;C:\Users\JAVIS\Documents\GitHub\WokLib\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.208393212" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.1132173816" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F205RG" valueType="enumerated"/>

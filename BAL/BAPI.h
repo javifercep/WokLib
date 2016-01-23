@@ -12,6 +12,7 @@
 #include "GPIO/GPIO.h"
 #include "RTOS/RTOS.h"
 #include "LEDS/LEDS.h"
+#include "USB/USB.h"
 
 /* Exported define ------------------------------------------------------------*/
 #define NUMBER_OF_LEDS					4

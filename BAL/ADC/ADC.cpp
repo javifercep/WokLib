@@ -20,8 +20,6 @@ static GPIO_TypeDef* GPIOPortList[NUMBER_OF_AN_INPUTS] = {AN1_PORT, AN2_PORT,
 static const uint16_t GPIOPinList[NUMBER_OF_AN_INPUTS] = {AN1_PIN, AN2_PIN, AN3_PIN,
 														  AN4_PIN, AN5_PIN, AN6_PIN};
 
-static ADC_HandleTypeDef hadc1;
-
 /* ADC1 init function */
 ADCInstance::ADCInstance(void)
 {
@@ -39,32 +37,32 @@ void ADCInstance::Initialization(void)
 
 	/**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
 	*/
-	hadc1.Instance = ADC1;
-	hadc1.Init.ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV2;
-	hadc1.Init.Resolution = ADC_RESOLUTION12b;
-	hadc1.Init.ScanConvMode = DISABLE;
-	hadc1.Init.ContinuousConvMode = DISABLE;
-	hadc1.Init.DiscontinuousConvMode = DISABLE;
-	hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-	hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-	hadc1.Init.NbrOfConversion = 1;
-	hadc1.Init.DMAContinuousRequests = DISABLE;
-	hadc1.Init.EOCSelection = EOC_SINGLE_CONV;
-	HAL_ADC_Init(&hadc1);
+	hadc.Instance = ADC1;
+	hadc.Init.ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV2;
+	hadc.Init.Resolution = ADC_RESOLUTION12b;
+	hadc.Init.ScanConvMode = DISABLE;
+	hadc.Init.ContinuousConvMode = DISABLE;
+	hadc.Init.DiscontinuousConvMode = DISABLE;
+	hadc.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+	hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+	hadc.Init.NbrOfConversion = 1;
+	hadc.Init.DMAContinuousRequests = DISABLE;
+	hadc.Init.EOCSelection = EOC_SINGLE_CONV;
+	HAL_ADC_Init(&hadc);
 
 	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
 	*/
 	sConfig.Channel = ADC_CHANNEL_9;
 	sConfig.Rank = 1;
 	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-	HAL_ADC_ConfigChannel(&hadc1, &sConfig);
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
 }
 
 void ADCInstance::Enable(unsigned int pin)
 {
 	  GPIO_InitTypeDef GPIO_InitStruct;
 
-	  if (hadc1.Instance == ADC1)
+	  if (hadc.Instance == ADC1)
 	  {
 	    /* Peripheral clock enable */
 	    __ADC1_CLK_ENABLE();
@@ -80,7 +78,7 @@ void ADCInstance::Enable(unsigned int pin)
 
 void ADCInstance::Disable(unsigned int pin)
 {
-	  if (hadc1.Instance == ADC1)
+	  if (hadc.Instance == ADC1)
 	  {
 	    /* Peripheral clock disable */
 	    __ADC1_CLK_DISABLE();
@@ -91,7 +89,7 @@ void ADCInstance::Disable(unsigned int pin)
 
 unsigned int ADCInstance::Read(unsigned int pin)
 {
-	return HAL_ADC_GetValue(&hadc1);
+	return HAL_ADC_GetValue(&hadc);
 }
 
 
