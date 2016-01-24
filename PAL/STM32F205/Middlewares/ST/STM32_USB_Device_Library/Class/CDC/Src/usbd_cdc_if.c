@@ -255,7 +255,6 @@ static int8_t CDC_Control_FS  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   */
 static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
 {
-	uint32_t ii;
 	UserRxSize += *Len;
 
   return (USBD_OK);
@@ -280,6 +279,14 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 	if (hUsbDevice_0 != 0)
 	{
 		result = USBD_OK;
+
+		/* Check if there is enough space in the circular buffer */
+		if (UserTxBufPtrIn + Len > APP_TX_DATA_SIZE)
+		{
+			UserTxBufPtrIn = 0;
+		}
+
+		/* Set the new USB tx buffer */
 		USBD_CDC_SetTxBuffer(hUsbDevice_0, &(UserTxBufferFS[UserTxBufPtrIn]), Len);
 
 		/* Get the data to be sent */
@@ -288,19 +295,11 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 			UserTxBufferFS[UserTxBufPtrIn] = Buf[ii];
 			/* Increment the in pointer */
 			UserTxBufPtrIn++;
-
-			/* To avoid buffer overflow */
-			if(UserTxBufPtrIn == APP_TX_DATA_SIZE)
-			{
-				UserTxBufPtrIn = 0;
-			}
 		}
 
 		result = USBD_CDC_TransmitPacket(hUsbDevice_0);
 	}
 
-
-	/* USER CODE END 7 */
 	return result;
 }
 

@@ -25,6 +25,10 @@ public:
 	unsigned int Available(void);
 	unsigned int Write(char *source, unsigned int size);
 	unsigned int Read(char *destination, unsigned int size);
+	unsigned int Print(char* source);
+	unsigned int Print(int source);
+	unsigned int Println(char * source);
+	unsigned int Println(int source);
 };
 
 /* Exported variables	  --------------------------------------------------------*/

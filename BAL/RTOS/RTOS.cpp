@@ -69,8 +69,8 @@ void StartDefaultTask(void const * argument)
 void StartCommunicationTask(void const * argument)
 {
   /* init code for FATFS */
-  char LoopString1[15] = "I'm Krakoski!\n";
-  char LoopString2[15] = "Hey! Woman ;)\n";
+  char LoopString1[15] = "I'm Krakoski!";
+  char LoopString2[15] = "Hey! Woman ;)";
   char KrakoskiAnswer[8] = "Hello!\n";
   char Question[10];
   char *CurrentString = LoopString2;
@@ -88,7 +88,7 @@ void StartCommunicationTask(void const * argument)
 	}
 	else
 	{
-		if (USBObj.Write(CurrentString, 15) != 0)
+		if (USBObj.Println(CurrentString) != 0)
 		{
 			if(CurrentString == LoopString2)
 			{

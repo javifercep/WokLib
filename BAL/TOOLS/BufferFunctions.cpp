@@ -11,9 +11,9 @@
 */
 
 /* Includes ------------------------------------------------------------------*/
+#include "FreeRTOS.h"
 #include "BufferFunctions.h"
 #include "stm32f2xx_hal_def.h"
-#include <stdlib.h>
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -42,9 +42,9 @@ QBuffer::~QBuffer(void)
 
 	for (ii = 0; ii < this->count; ii++)
 	{
-		free(&(this->QueueList->Data[(this->start + ii) % this->size]));
+		vPortFree(&(this->QueueList->Data[(this->start + ii) % this->size]));
 	}
-	free(this->QueueList);
+	vPortFree(this->QueueList);
 	this->QueueList = NULL;
 	this->size = 0;
 	this->start = 0;
@@ -56,7 +56,7 @@ unsigned int QBuffer::Alloc(unsigned int size)
 	this->size = 0;
 	this->start = 0;
 	this->count = 0;
-	this->QueueList = (Queue*)malloc(sizeof(Queue)*size);
+	this->QueueList = (Queue*)pvPortMalloc(sizeof(Queue)*size);
 
 	if(this->QueueList != NULL)
 	{
@@ -73,9 +73,9 @@ unsigned int QBuffer::Free(void)
 
 	for (ii = 0; ii < this->count; ii++)
 	{
-		free(&(this->QueueList->Data[(this->start + ii) % this->size]));
+		vPortFree(&(this->QueueList->Data[(this->start + ii) % this->size]));
 	}
-	free(this->QueueList);
+	vPortFree(this->QueueList);
 	this->QueueList = NULL;
 	this->size = 0;
 	this->start = 0;
@@ -141,7 +141,7 @@ Queue::Queue()
 
 Queue::~Queue(void)
 {
-	free(this->Data);
+	vPortFree(this->Data);
 	this->Data = NULL;
 	this->size = 0;
 	this->start = 0;
@@ -153,7 +153,7 @@ unsigned int Queue::Alloc(unsigned int size)
 	this->size = 0;
 	this->start = 0;
 	this->count = 0;
-	this->Data = (unsigned char *)malloc(sizeof(unsigned char)*size);
+	this->Data = (unsigned char *)pvPortMalloc(sizeof(unsigned char)*size);
 
 	if(this->Data != NULL)
 	{
@@ -167,7 +167,7 @@ unsigned int Queue::Free(void)
 {
 	unsigned int SizeTemp = this->size;
 
-	free(this->Data);
+	vPortFree(this->Data);
 	this->Data = NULL;
 	this->size = 0;
 	this->start = 0;

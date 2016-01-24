@@ -10,6 +10,7 @@
 #include "BAPI.h"
 #include "USB.h"
 #include "TOOLS/BufferFunctions.h"
+#include "FreeRTOS.h"
 
 #include "stm32f2xx.h"
 #include "stm32f2xx_hal.h"
@@ -18,19 +19,16 @@
 #include "usbd_desc.h"
 #include "usbd_cdc.h"
 #include "usbd_cdc_if.h"
+#include <stdio.h>
+#include <string.h>
 
 /* private defines	  ------------------------------------------------------------*/
-#define USB_TX_BUFF_SIZE	2048
-#define USB_RX_BUFF_SIZE	2048
 
 /* private variables	  --------------------------------------------------------*/
 extern uint8_t UserRxBufferFS[];
 extern uint16_t UserRxSize;
 
 extern uint8_t UserTxBufferFS[];
-
-QBuffer USBTxQBuffer;
-QBuffer USBRxQBuffer;
 
 USBInstance USBObj;
 USBD_HandleTypeDef hUsbDeviceFS;
@@ -49,9 +47,6 @@ USBInstance::~USBInstance(void)
 
 void USBInstance::Initialization(void)
 {
-	USBTxQBuffer.Alloc(USB_TX_BUFF_SIZE);
-	USBRxQBuffer.Alloc(USB_RX_BUFF_SIZE);
-
 	/* Init Device Library,Add Supported Class and Start the library*/
 	USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
 
@@ -101,4 +96,90 @@ unsigned int USBInstance::Read(char *destination, unsigned int size)
 	return result;
 }
 
+unsigned int USBInstance::Print(char* source)
+{
+	char *pTemp;
+	unsigned int result = 0;
+	unsigned int size = strlen(source);
+
+	pTemp = (char* )pvPortMalloc(strlen(source));
+
+	if(pTemp != NULL)
+	{
+		strcpy(pTemp, source);
+
+		if (CDC_Transmit_FS((uint8_t *)pTemp, size) == USBD_OK)
+		{
+			result = size;
+		}
+
+		vPortFree(pTemp);
+	}
+
+	return result;
+}
+
+unsigned int USBInstance::Print(int source)
+{
+	char pTemp[4];
+	unsigned int result = 0;
+	unsigned int size = 0;
+
+	size = sprintf(pTemp, "%d", source);
+
+	if( size > 0)
+	{
+		if (CDC_Transmit_FS((uint8_t *)pTemp, size) == USBD_OK)
+		{
+			result = size;
+		}
+	}
+
+	return result;
+}
+
+unsigned int USBInstance::Println(char* source)
+{
+	char *pTemp;
+	unsigned int result = 0;
+	unsigned int size = 0;
+
+	pTemp = (char *) pvPortMalloc(strlen(source) + 2);
+
+	if (pTemp != NULL)
+	{
+		strcpy(pTemp, source);
+		strcat(pTemp, "\n");
+
+		size = strlen(pTemp);
+
+		if (CDC_Transmit_FS((uint8_t *)pTemp, size) == USBD_OK)
+		{
+			result = size;
+		}
+
+		vPortFree(pTemp);
+	}
+
+	return result;
+}
+
+unsigned int USBInstance::Println(int source)
+{
+	char pTemp[6];
+	unsigned int result = 0;
+	unsigned int size = 0;
+
+	size = sprintf(pTemp, "%d\n", source);
+
+	if(size > 0)
+	{
+		if (CDC_Transmit_FS((uint8_t *)pTemp, size) == USBD_OK)
+		{
+			result = size;
+		}
+	}
+
+	return result;
+}
 
