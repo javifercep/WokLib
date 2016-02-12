@@ -1,11 +1,14 @@
 /**
   ******************************************************************************
-  * File Name          : SDIO.h
-  * Description        : This file provides code for the configuration
-  *                      of the SDIO instances.
+  * @file    stm32f2xx_hal_pcd_ex.h
+  * @author  MCD Application Team
+  * @version V1.1.2
+  * @date    11-December-2015
+  * @brief   Header file of PCD HAL module.
   ******************************************************************************
+  * @attention
   *
-  * COPYRIGHT(c) 2016 STMicroelectronics
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -30,33 +33,61 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */
+  */ 
+
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __sdio_H
-#define __sdio_H
+#ifndef __STM32F2xx_HAL_PCD_EX_H
+#define __STM32F2xx_HAL_PCD_EX_H
+
 #ifdef __cplusplus
  extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f2xx_hal.h"
+#include "stm32f2xx_hal_def.h"
+   
+/** @addtogroup STM32F2xx_HAL_Driver
+  * @{
+  */
 
-extern SD_HandleTypeDef hsd;
-extern HAL_SD_CardInfoTypedef SDCardInfo;
+/** @addtogroup PCDEx
+  * @{
+  */
 
-void MX_SDIO_SD_Init(void);
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported macros -----------------------------------------------------------*/
+/* Exported functions --------------------------------------------------------*/
+/** @addtogroup PCDEx_Exported_Functions
+  * @{
+  */
+/** @addtogroup PCDEx_Exported_Functions_Group1
+  * @{
+  */
+HAL_StatusTypeDef HAL_PCDEx_SetTxFiFo(PCD_HandleTypeDef *hpcd, uint8_t fifo, uint16_t size);
+HAL_StatusTypeDef HAL_PCDEx_SetRxFiFo(PCD_HandleTypeDef *hpcd, uint16_t size);
+
+/**
+  * @}
+  */ 
+
+/**
+  * @}
+  */ 
+
+/**
+  * @}
+  */ 
+
+/**
+  * @}
+  */
 
 #ifdef __cplusplus
 }
 #endif
-#endif /*__ sdio_H */
 
-/**
-  * @}
-  */
 
-/**
-  * @}
-  */
+#endif /* __STM32F2xx_HAL_PCD_EX_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

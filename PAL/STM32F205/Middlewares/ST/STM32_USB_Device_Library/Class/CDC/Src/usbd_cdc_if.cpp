@@ -32,6 +32,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc_if.h"
+#include "TOOLS/BufferFunctions.h"
+/* USER CODE BEGIN INCLUDE */
+/* USER CODE END INCLUDE */
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
@@ -45,8 +48,8 @@
 /** @defgroup USBD_CDC_Private_TypesDefinitions
   * @{
   */ 
-  /* USER CODE BEGIN 0 */ 
-  /* USER CODE END 0 */ 
+/* USER CODE BEGIN PRIVATE_TYPES */
+/* USER CODE END PRIVATE_TYPES */ 
 /**
   * @}
   */ 
@@ -54,12 +57,12 @@
 /** @defgroup USBD_CDC_Private_Defines
   * @{
   */ 
-  /* USER CODE BEGIN 1 */
+/* USER CODE BEGIN PRIVATE_DEFINES */
 /* Define size for the receive and transmit buffer over CDC */
 /* It's up to user to redefine and/or remove those define */
-#define APP_RX_DATA_SIZE  2048
-#define APP_TX_DATA_SIZE  2048
-  /* USER CODE END 1 */  
+#define APP_RX_DATA_SIZE  2047
+#define APP_TX_DATA_SIZE  2047
+/* USER CODE END PRIVATE_DEFINES */
 /**
   * @}
   */ 
@@ -67,8 +70,9 @@
 /** @defgroup USBD_CDC_Private_Macros
   * @{
   */ 
-  /* USER CODE BEGIN 2 */ 
-  /* USER CODE END 2 */
+/* USER CODE BEGIN PRIVATE_MACRO */
+/* USER CODE END PRIVATE_MACRO */
+
 /**
   * @}
   */ 
@@ -80,18 +84,27 @@
 /* It's up to user to redefine and/or remove those define */
 /* Received Data over USB are stored in this buffer       */
 uint8_t UserRxBufferFS[APP_RX_DATA_SIZE];
-uint16_t UserRxSize;
-uint32_t UserTxBufPtrOut = 0;
+Queue USBRxQueue;
 
 /* Send Data over USB CDC are stored in this buffer       */
-uint8_t 	UserTxBufferFS[APP_TX_DATA_SIZE];
-uint32_t	UserTxBufPtrIn = 0;
+uint8_t UserTxBufferFS[APP_TX_DATA_SIZE];
 
 /* USB handler declaration */
 /* Handle for USB Full Speed IP */
-USBD_HandleTypeDef  *hUsbDevice_0;
+  USBD_HandleTypeDef  *hUsbDevice_0;
+/* USER CODE BEGIN PRIVATE_VARIABLES */
+/* USER CODE END PRIVATE_VARIABLES */
 
-extern USBD_HandleTypeDef hUsbDeviceFS;
+/**
+  * @}
+  */ 
+  
+/** @defgroup USBD_CDC_IF_Exported_Variables
+  * @{
+  */ 
+  extern USBD_HandleTypeDef hUsbDeviceFS;
+/* USER CODE BEGIN EXPORTED_VARIABLES */
+/* USER CODE END EXPORTED_VARIABLES */
 
 /**
   * @}
@@ -105,20 +118,19 @@ static int8_t CDC_DeInit_FS   (void);
 static int8_t CDC_Control_FS  (uint8_t cmd, uint8_t* pbuf, uint16_t length);
 static int8_t CDC_Receive_FS  (uint8_t* pbuf, uint32_t *Len);
 
+/* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION */
+/* USER CODE END PRIVATE_FUNCTIONS_DECLARATION */
+
+/**
+  * @}
+  */ 
+  
 USBD_CDC_ItfTypeDef USBD_Interface_fops_FS = 
 {
   CDC_Init_FS,
   CDC_DeInit_FS,
   CDC_Control_FS,  
   CDC_Receive_FS
-};
-
-USBD_CDC_LineCodingTypeDef linecoding =
-{
-	115200, /* baud rate*/
-	0x00,   /* stop bits-1*/
-	0x00,   /* parity - none*/
-	0x08    /* nb. of bits 8*/
 };
 
 /* Private functions ---------------------------------------------------------*/
@@ -203,22 +215,10 @@ static int8_t CDC_Control_FS  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   /* 6      | bDataBits  |   1   | Number Data bits (5, 6, 7, 8 or 16).          */
   /*******************************************************************************/
   case CDC_SET_LINE_CODING:   
-	linecoding.bitrate    = (uint32_t)(pbuf[0] | (pbuf[1] << 8) |\
-							(pbuf[2] << 16) | (pbuf[3] << 24));
-	linecoding.format     = pbuf[4];
-	linecoding.paritytype = pbuf[5];
-	linecoding.datatype   = pbuf[6];
 	
     break;
 
-  case CDC_GET_LINE_CODING:
-	pbuf[0] = (uint8_t)(linecoding.bitrate);
-	pbuf[1] = (uint8_t)(linecoding.bitrate >> 8);
-	pbuf[2] = (uint8_t)(linecoding.bitrate >> 16);
-	pbuf[3] = (uint8_t)(linecoding.bitrate >> 24);
-	pbuf[4] = linecoding.format;
-	pbuf[5] = linecoding.paritytype;
-	pbuf[6] = linecoding.datatype;
+  case CDC_GET_LINE_CODING:     
 
     break;
 
@@ -255,9 +255,16 @@ static int8_t CDC_Control_FS  (uint8_t cmd, uint8_t* pbuf, uint16_t length)
   */
 static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
 {
-	UserRxSize += *Len;
+	uint8_t *pTemp = Buf;
+	/* USER CODE BEGIN 6 */
+	USBRxQueue.WriteFromArray(pTemp, *Len);
 
-  return (USBD_OK);
+	USBD_CDC_SetRxBuffer(hUsbDevice_0, UserRxBufferFS);
+
+	USBD_CDC_ReceivePacket(hUsbDevice_0);
+
+	return (USBD_OK);
+	/* USER CODE END 6 */
 }
 
 /**
@@ -273,39 +280,24 @@ static int8_t CDC_Receive_FS (uint8_t* Buf, uint32_t *Len)
   */
 uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 {
-	uint8_t result = USBD_BUSY;
-	uint32_t ii;
+  uint8_t result = USBD_BUSY;
+  USBD_CDC_HandleTypeDef   *hcdc = (USBD_CDC_HandleTypeDef*) hUsbDevice_0->pClassData;
 
-	if (hUsbDevice_0 != 0)
-	{
-		result = USBD_OK;
-
-		/* Check if there is enough space in the circular buffer */
-		if (UserTxBufPtrIn + Len > APP_TX_DATA_SIZE)
-		{
-			UserTxBufPtrIn = 0;
-		}
-
-		/* Set the new USB tx buffer */
-		USBD_CDC_SetTxBuffer(hUsbDevice_0, &(UserTxBufferFS[UserTxBufPtrIn]), Len);
-
-		/* Get the data to be sent */
-		for (ii = 0; ii < Len; ii++)
-		{
-			UserTxBufferFS[UserTxBufPtrIn] = Buf[ii];
-			/* Increment the in pointer */
-			UserTxBufPtrIn++;
-		}
-
-		result = USBD_CDC_TransmitPacket(hUsbDevice_0);
-	}
-
-	return result;
+  if (hUsbDevice_0->pClassData != NULL)
+  {
+	  if(hcdc->TxState == 0)
+	  {
+		  /* USER CODE BEGIN 7 */
+		  USBD_CDC_SetTxBuffer(hUsbDevice_0, Buf, Len);
+		  result = USBD_CDC_TransmitPacket(hUsbDevice_0);
+	  }
+  }
+  /* USER CODE END 7 */ 
+  return result;
 }
 
-/**
-  * @}
-  */ 
+/* USER CODE BEGIN PRIVATE_FUNCTIONS_IMPLEMENTATION */
+/* USER CODE END PRIVATE_FUNCTIONS_IMPLEMENTATION */
 
 /**
   * @}

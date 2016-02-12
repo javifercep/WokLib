@@ -12,9 +12,6 @@
 #include "TOOLS/BufferFunctions.h"
 #include "FreeRTOS.h"
 
-#include "stm32f2xx.h"
-#include "stm32f2xx_hal.h"
-#include "usbd_def.h"
 #include "usbd_core.h"
 #include "usbd_desc.h"
 #include "usbd_cdc.h"
@@ -25,10 +22,7 @@
 /* private defines	  ------------------------------------------------------------*/
 
 /* private variables	  --------------------------------------------------------*/
-extern uint8_t UserRxBufferFS[];
-extern uint16_t UserRxSize;
-
-extern uint8_t UserTxBufferFS[];
+extern Queue USBRxQueue;
 
 USBInstance USBObj;
 USBD_HandleTypeDef hUsbDeviceFS;
@@ -47,6 +41,7 @@ USBInstance::~USBInstance(void)
 
 void USBInstance::Initialization(void)
 {
+	USBRxQueue.Alloc(2047);
 	/* Init Device Library,Add Supported Class and Start the library*/
 	USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
 
@@ -55,7 +50,6 @@ void USBInstance::Initialization(void)
 	USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS);
 
 	USBD_Start(&hUsbDeviceFS);
-
 }
 
 void USBInstance::Configuration(unsigned int command, void* arg)
@@ -66,32 +60,31 @@ void USBInstance::Configuration(unsigned int command, void* arg)
 
 unsigned int USBInstance::Available(void)
 {
-	return UserRxSize;
+	return USBRxQueue.Available(); //UserRxSize;
 }
 
 unsigned int USBInstance::Write(char *source, unsigned int size)
 {
 	char *pTemp = source;
-	unsigned int result = 0;
+	unsigned int result = size;
 
-	if (CDC_Transmit_FS((uint8_t *)pTemp, size) == USBD_OK)
-	{
-		result = size;
-	}
+	/* wait until the last message has been sent and set the new buffer */
+	while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
 
 	return result;
 }
 
 unsigned int USBInstance::Read(char *destination, unsigned int size)
 {
-	char *pTemp = destination;
-	unsigned int result = 0;
+	unsigned char *pTemp = (unsigned char *)destination;
+	unsigned int result = size;
 
-	if (size <= UserRxSize)
+	if (result > USBRxQueue.Available())
 	{
-		memcpy(pTemp, UserRxBufferFS, size);
-		UserRxSize -=size;
+		result = USBRxQueue.Available();
 	}
+
+	USBRxQueue.ReadToArray(pTemp, result);
 
 	return result;
 }
@@ -108,10 +101,9 @@ unsigned int USBInstance::Print(char* source)
 	{
 		strcpy(pTemp, source);
 
-		if (CDC_Transmit_FS((uint8_t *)pTemp, size) == USBD_OK)
-		{
-			result = size;
-		}
+		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+
+		result = size;
 
 		vPortFree(pTemp);
 	}
@@ -129,10 +121,10 @@ unsigned int USBInstance::Print(int source)
 
 	if( size > 0)
 	{
-		if (CDC_Transmit_FS((uint8_t *)pTemp, size) == USBD_OK)
-		{
-			result = size;
-		}
+		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+
+		result = size;
+
 	}
 
 	return result;
@@ -153,10 +145,10 @@ unsigned int USBInstance::Println(char* source)
 
 		size = strlen(pTemp);
 
-		if (CDC_Transmit_FS((uint8_t *)pTemp, size) == USBD_OK)
-		{
-			result = size;
-		}
+		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+
+		result = size;
+
 
 		vPortFree(pTemp);
 	}
@@ -174,10 +166,9 @@ unsigned int USBInstance::Println(int source)
 
 	if(size > 0)
 	{
-		if (CDC_Transmit_FS((uint8_t *)pTemp, size) == USBD_OK)
-		{
-			result = size;
-		}
+		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+
+		result = size;
 	}
 
 	return result;

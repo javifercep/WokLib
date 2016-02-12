@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f2xx_hal_pwr_ex.h
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    25-March-2014
+  * @version V1.1.2
+  * @date    11-December-2015
   * @brief   Header file of PWR HAL Extension module.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -56,12 +56,92 @@
 
 /* Exported types ------------------------------------------------------------*/ 
 /* Exported constants --------------------------------------------------------*/
+/** @defgroup PWREx_Exported_Constants PWR Exported Constants
+  * @{
+  */
+
+/**
+  * @}
+  */ 
+
 /* Exported macro ------------------------------------------------------------*/
+/** @defgroup PWREx_Exported_Constants PWR Exported Constants
+  *  @{
+  */
+/**
+  * @}
+  */
+
 /* Exported functions --------------------------------------------------------*/
-void              HAL_PWREx_EnableFlashPowerDown(void);
-void              HAL_PWREx_DisableFlashPowerDown(void); 
+/** @addtogroup PWREx_Exported_Functions PWR Exported Functions
+  *  @{
+  */
+ 
+/** @addtogroup PWREx_Exported_Functions_Group1
+  * @{
+  */
+void HAL_PWREx_EnableFlashPowerDown(void);
+void HAL_PWREx_DisableFlashPowerDown(void); 
 HAL_StatusTypeDef HAL_PWREx_EnableBkUpReg(void);
 HAL_StatusTypeDef HAL_PWREx_DisableBkUpReg(void); 
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+/* Private types -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private constants ---------------------------------------------------------*/
+/** @defgroup PWREx_Private_Constants PWR Private Constants
+  * @{
+  */
+
+/** @defgroup PWREx_register_alias_address PWR Register alias address
+  * @{
+  */
+/* ------------- PWR registers bit address in the alias region ---------------*/
+/* --- CR Register ---*/
+/* Alias word address of FPDS bit */
+#define FPDS_BIT_NUMBER          POSITION_VAL(PWR_CR_FPDS)
+#define CR_FPDS_BB               (uint32_t)(PERIPH_BB_BASE + (PWR_CR_OFFSET_BB * 32) + (FPDS_BIT_NUMBER * 4))
+
+ /**
+  * @}
+  */
+
+/** @defgroup PWREx_CSR_register_alias PWR CSR Register alias address
+  * @{
+  */  
+/* --- CSR Register ---*/
+/* Alias word address of BRE bit */
+#define BRE_BIT_NUMBER   POSITION_VAL(PWR_CSR_BRE)
+#define CSR_BRE_BB      (uint32_t)(PERIPH_BB_BASE + (PWR_CSR_OFFSET_BB * 32) + (BRE_BIT_NUMBER * 4))    
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/* Private macros ------------------------------------------------------------*/
+/** @defgroup PWREx_Private_Macros PWR Private Macros
+  * @{
+  */
+
+/** @defgroup PWREx_IS_PWR_Definitions PWR Private macros to check input parameters
+  * @{
+  */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
 
 /**
   * @}

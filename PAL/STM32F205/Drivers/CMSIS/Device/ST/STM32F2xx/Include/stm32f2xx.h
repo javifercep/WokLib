@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f2xx.h
   * @author  MCD Application Team
-  * @version V2.0.1
-  * @date    25-March-2014
+  * @version V2.1.1
+  * @date    20-November-2015
   * @brief   CMSIS STM32F2xx Device Peripheral Access Layer Header File. 
   *
   *          The file is the unique include file that the application programmer
@@ -18,7 +18,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -64,16 +64,25 @@
   * @{
   */
 
+/**
+  * @brief STM32 Family
+  */
+#if !defined (STM32F2)
+#define STM32F2
+#endif /* STM32F2 */
+   
 /* Uncomment the line below according to the target STM32 device used in your
    application 
   */
-
 #if !defined (STM32F205xx) && !defined (STM32F215xx) && !defined (STM32F207xx) && !defined (STM32F217xx)
 
-  /* #define STM32F205xx */   /*!< STM32Fxx    Devices */
-  /* #define STM32F215xx */   /*!< STM32Fxx    Devices */
-  /* #define STM32F207xx */   /*!< STM32Fxx    Devices */
-  /* #define STM32F217xx */   /*!< STM32Fxx    Devices */
+  /* #define STM32F205xx */   /*!< STM32F205RG, STM32F205VG, STM32F205ZG, STM32F205RF, STM32F205VF, STM32F205ZF,
+                                   STM32F205RE, STM32F205VE, STM32F205ZE, STM32F205RC, STM32F205VC, STM32F205ZC,
+                                   STM32F205RB and STM32F205VB Devices */
+  /* #define STM32F215xx */   /*!< STM32F215RG, STM32F215VG, STM32F215ZG, STM32F215RE, STM32F215VE and STM32F215ZE Devices */
+  /* #define STM32F207xx */   /*!< STM32F207VG, STM32F207ZG, STM32F207IG, STM32F207VF, STM32F207ZF, STM32F207IF,
+                                   STM32F207VE, STM32F207ZE, STM32F207IE, STM32F207VC, STM32F207ZC and STM32F207IC Devices */
+  /* #define STM32F217xx */   /*!< STM32F217VG, STM32F217ZG, STM32F217IG, STM32F217VE, STM32F217ZE and STM32F217IE Devices */
     
 #endif
    
@@ -90,12 +99,12 @@
 #endif /* USE_HAL_DRIVER */
 
 /**
-  * @brief CMSIS Device version number V2.0.1
+  * @brief CMSIS Device version number V2.1.1
   */
-#define __STM32F2xx_CMSIS_DEVICE_VERSION_MAIN   (0x02) /*!< [31:24] main version */                                  
-#define __STM32F2xx_CMSIS_DEVICE_VERSION_SUB1   (0x00) /*!< [23:16] sub1 version */
-#define __STM32F2xx_CMSIS_DEVICE_VERSION_SUB2   (0x00) /*!< [15:8]  sub2 version */
-#define __STM32F2xx_CMSIS_DEVICE_VERSION_RC     (0x00) /*!< [7:0]  release candidate */ 
+#define __STM32F2xx_CMSIS_DEVICE_VERSION_MAIN   (0x02) /*!< [31:24] main version */
+#define __STM32F2xx_CMSIS_DEVICE_VERSION_SUB1   (0x01) /*!< [23:16] sub1 version */
+#define __STM32F2xx_CMSIS_DEVICE_VERSION_SUB2   (0x01) /*!< [15:8]  sub2 version */
+#define __STM32F2xx_CMSIS_DEVICE_VERSION_RC     (0x00) /*!< [7:0]  release candidate */
 #define __STM32F2xx_CMSIS_DEVICE_VERSION        ((__CMSIS_DEVICE_VERSION_MAIN     << 24)\
                                       |(__CMSIS_DEVICE_HAL_VERSION_SUB1 << 16)\
                                       |(__CMSIS_DEVICE_HAL_VERSION_SUB2 << 8 )\
@@ -175,7 +184,10 @@ typedef enum
 /**
   * @}
   */
-
+  
+#if defined (USE_HAL_DRIVER)
+ //#include "stm32f2xx_hal.h"
+#endif /* USE_HAL_DRIVER */
 
 #ifdef __cplusplus
 }

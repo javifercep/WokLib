@@ -45,7 +45,7 @@ void RTOSInstance::Initialization(void)
 
 
    /* Start scheduler */
-   osKernelStart(NULL, NULL);
+   osKernelStart();
 }
 
 void StartDefaultTask(void const * argument)
@@ -78,12 +78,13 @@ void StartCommunicationTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	if (USBObj.Available() > 0)
+	if (USBObj.Available() > 5)
 	{
 		USBObj.Read(Question, USBObj.Available());
 		if (strcmp(Question, "Hello!\n") != 0)
 		{
 			USBObj.Write(KrakoskiAnswer, 8);
+			memset(Question, 0, 10);
 		}
 	}
 	else

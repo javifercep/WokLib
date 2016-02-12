@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f2xx_hal_gpio_ex.h
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    25-March-2014
+  * @version V1.1.2
+  * @date    11-December-2015
   * @brief   Header file of GPIO HAL Extension module.
   ******************************************************************************
-  * @attention 
+  * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -50,19 +50,19 @@
   * @{
   */
 
-/** @addtogroup GPIO
+/** @defgroup GPIOEx GPIOEx
   * @{
   */ 
 
 /* Exported types ------------------------------------------------------------*/
-
+/* Exported constants --------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
-/** @defgroup GPIO_Exported_Constants
+/** @defgroup GPIOEx_Exported_Constants GPIO Exported Constants
   * @{
   */ 
   
-/** @defgroup GPIO_Alternat_function_selection 
+/** @defgroup GPIO_Alternate_function_selection GPIO Alternate function selection 
   * @{
   */
 
@@ -168,7 +168,65 @@
   */ 
 #define GPIO_AF15_EVENTOUT      ((uint8_t)0x0F)  /* EVENTOUT Alternate Function mapping */
 
+/**
+  * @}
+  */ 
+
+/**
+  * @}
+  */
+
+/* Exported macro ------------------------------------------------------------*/
+/** @defgroup GPIOEx_Exported_Macros GPIO Exported Macros
+  * @{
+  */
+/**
+  * @}
+  */
+
+/* Exported functions --------------------------------------------------------*/ 
+/** @defgroup GPIOEx_Exported_Functions GPIO Exported Functions
+  * @{
+  */
+/**
+  * @}
+  */
+
+/* Private types -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private constants ---------------------------------------------------------*/
+/** @defgroup GPIOEx_Private_Constants GPIO Private Constants
+  * @{
+  */
+/**
+  * @}
+  */
+
+/* Private macros ------------------------------------------------------------*/
+/** @defgroup GPIOEx_Private_Macros GPIO Private Macros
+  * @{
+  */
+/** @defgroup GPIOEx_Get_Port_Index GPIO Get Port Index
+  * @{
+  */
+#define GPIO_GET_INDEX(__GPIOx__)    (uint8_t)(((__GPIOx__) == (GPIOA))? 0U :\
+                                               ((__GPIOx__) == (GPIOB))? 1U :\
+                                               ((__GPIOx__) == (GPIOC))? 2U :\
+                                               ((__GPIOx__) == (GPIOD))? 3U :\
+                                               ((__GPIOx__) == (GPIOE))? 4U :\
+                                               ((__GPIOx__) == (GPIOF))? 5U :\
+                                               ((__GPIOx__) == (GPIOG))? 6U :\
+                                               ((__GPIOx__) == (GPIOH))? 7U :\
+                                               ((__GPIOx__) == (GPIOI))? 8U : 9U)
+/**
+  * @}
+  */
+
+/** @defgroup GPIOEx_IS_Alternat_function_selection GPIO Check Alternate Function
+  * @{
+  */  
 #if defined(STM32F207xx) || defined(STM32F217xx)
+ 
 #define IS_GPIO_AF(AF)   (((AF) == GPIO_AF0_RTC_50Hz)   || ((AF) == GPIO_AF9_TIM14)      || \
                           ((AF) == GPIO_AF0_MCO)        || ((AF) == GPIO_AF0_TAMPER)     || \
                           ((AF) == GPIO_AF0_SWJ)        || ((AF) == GPIO_AF0_TRACE)      || \
@@ -215,9 +273,14 @@
   * @}
   */
 
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions --------------------------------------------------------*/ 
+/* Private functions ---------------------------------------------------------*/
+/** @defgroup GPIOEx_Private_Functions GPIO Private Functions
+  * @{
+  */
 
+/**
+  * @}
+  */
 
 /**
   * @}

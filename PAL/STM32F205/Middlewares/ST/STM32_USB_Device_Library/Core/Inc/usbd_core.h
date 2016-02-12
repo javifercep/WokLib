@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    usbd_core.h
   * @author  MCD Application Team
-  * @version V2.0.0
-  * @date    18-February-2014
-  * @brief   Header file for usbd_core.c
+  * @version V2.4.1
+  * @date    19-June-2015
+  * @brief   Header file for usbd_core.c file
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@
 #include "usbd_ioreq.h"
 #include "usbd_ctlreq.h"
 
-/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+/** @addtogroup STM32_USB_DEVICE_LIBRARY
   * @{
   */
   
@@ -143,12 +143,13 @@ USBD_StatusTypeDef  USBD_LL_PrepareReceive(USBD_HandleTypeDef *pdev,
 uint32_t USBD_LL_GetRxDataSize  (USBD_HandleTypeDef *pdev, uint8_t  ep_addr);  
 void  USBD_LL_Delay (uint32_t Delay);
 
-#ifdef __cplusplus
-}
-#endif
 /**
   * @}
   */ 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __USBD_CORE_H */
 

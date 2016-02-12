@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f2xx_hal_rcc_ex.c
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    25-March-2014
+  * @version V1.1.2
+  * @date    11-December-2015
   * @brief   Extension RCC HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities RCC extension peripheral:
@@ -12,7 +12,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -46,8 +46,8 @@
   * @{
   */
 
-/** @defgroup RCC 
-  * @brief RCC HAL module driver
+/** @defgroup RCCEx RCCEx
+  * @brief RCCEx HAL module driver
   * @{
   */
 
@@ -55,17 +55,21 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define PLLI2S_TIMEOUT_VALUE    100 /* Timeout value fixed to 100 ms  */
+/** @addtogroup RCCEx_Private_Constants
+  * @{
+  */
+/**
+  * @}
+  */ 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-
-/** @defgroup RCCEx_Private_Functions
-  * @{
+/** @defgroup RCCEx_Exported_Functions RCC Exported Functions
+  *  @{
   */
 
-/** @defgroup RCCEx_Group1 Extended Peripheral Control functions 
+/** @defgroup RCCEx_Exported_Functions_Group1 Extended Peripheral Control functions 
  *  @brief  Extended Peripheral Control functions  
  *
 @verbatim   
@@ -76,9 +80,10 @@
     This subsection provides a set of functions allowing to control the RCC Clocks 
     frequencies.
     [..] 
-    (@) Important note: A caution to be taken when HAL_RCCEx_PeriphCLKConfig() is used to select RTC clock source, in this case 
-  *         the Reset of Backup domain will be applied in order to modify the RTC Clock source as consequence all backup 
-  *        domain (RTC and RCC_BDCR register expect BKPSRAM) will be reset.
+    (@) Important note: Care must be taken when HAL_RCCEx_PeriphCLKConfig() is used to
+        select the RTC clock source; in this case the Backup domain will be reset in  
+        order to modify the RTC Clock source, as consequence RTC registers (including 
+        the backup registers) and RCC_BDCR register are set to their reset values.
       
 @endverbatim
   * @{
@@ -90,7 +95,7 @@
   * @param  PeriphClkInit: pointer to an RCC_PeriphCLKInitTypeDef structure that
   *         contains the configuration information for the Extended Peripherals clocks(I2S and RTC clocks).
   *         
-  * @note   A caution to be taken when HAL_RCCEx_PeriphCLKConfig() is used to select RTC clock source, in this case 
+  * @note   A caution to be taken when HAL_RCCEx_PeriphCLKConfig() is used to select RTC clock selection, in this case 
   *         the Reset of Backup domain will be applied in order to modify the RTC Clock source as consequence all backup 
   *        domain (RTC and RCC_BDCR register expect BKPSRAM) will be reset
   *              
@@ -98,109 +103,110 @@
   */
 HAL_StatusTypeDef HAL_RCCEx_PeriphCLKConfig(RCC_PeriphCLKInitTypeDef  *PeriphClkInit)
 {
-  uint32_t timeout = 0;
-  uint32_t tmpreg = 0;
+  uint32_t tickstart = 0;
+  uint32_t tmpreg1 = 0;
     
   /* Check the parameters */
   assert_param(IS_RCC_PERIPHCLOCK(PeriphClkInit->PeriphClockSelection));
   
-  /*---------------------------- I2S configuration -------------------------------*/      
-  if(((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_I2S) == (RCC_PERIPHCLK_I2S))
+  /*---------------------------- I2S configuration ---------------------------*/
+  if(((PeriphClkInit->PeriphClockSelection & RCC_PERIPHCLK_I2S) == (RCC_PERIPHCLK_I2S))|| \
+     (PeriphClkInit->PeriphClockSelection == RCC_PERIPHCLK_PLLI2S))
   {
     /* check for Parameters */
     assert_param(IS_RCC_PLLI2SR_VALUE(PeriphClkInit->PLLI2S.PLLI2SR));
     assert_param(IS_RCC_PLLI2SN_VALUE(PeriphClkInit->PLLI2S.PLLI2SN));
       
     /* Disable the PLLI2S */
-    __HAL_RCC_PLLI2S_DISABLE();    
-    /* Get new Timeout value */
-    timeout = HAL_GetTick() + PLLI2S_TIMEOUT_VALUE;
+    __HAL_RCC_PLLI2S_DISABLE();
+    /* Get tick */
+    tickstart = HAL_GetTick();
     /* Wait till PLLI2S is disabled */
     while(__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY)  != RESET)
     {
-      if(HAL_GetTick() >= timeout)
+      if((HAL_GetTick() - tickstart ) > PLLI2S_TIMEOUT_VALUE)
       {
-        /* return in case of Timeout detected */         
+        /* return in case of Timeout detected */
         return HAL_TIMEOUT;
       } 
     }
     /* Configure the PLLI2S division factors */
-    /* PLLI2S_VCO = f(VCO clock) = f(PLLI2S clock input) × (PLLI2SN/PLLM) */
+    /* PLLI2S_VCO = f(VCO clock) = f(PLLI2S clock input) * (PLLI2SN/PLLM) */
     /* I2SCLK = f(PLLI2S clock output) = f(VCO clock) / PLLI2SR */
     __HAL_RCC_PLLI2S_CONFIG(PeriphClkInit->PLLI2S.PLLI2SN , PeriphClkInit->PLLI2S.PLLI2SR);
     
     /* Enable the PLLI2S */
     __HAL_RCC_PLLI2S_ENABLE();
-    /* Get new Timeout value */
-    timeout = HAL_GetTick() + PLLI2S_TIMEOUT_VALUE;
+    /* Get tick */
+    tickstart = HAL_GetTick();
     /* Wait till PLLI2S is ready */
     while(__HAL_RCC_GET_FLAG(RCC_FLAG_PLLI2SRDY)  == RESET)
     {
-      if(HAL_GetTick() >= timeout)
+      if((HAL_GetTick() - tickstart ) > PLLI2S_TIMEOUT_VALUE)
       {
-        /* return in case of Timeout detected */         
+        /* return in case of Timeout detected */
         return HAL_TIMEOUT;
       }
     }
   }
+  /*--------------------------------------------------------------------------*/
   
-  /*---------------------------- RTC configuration -------------------------------*/
+  /*----------------------------- RTC configuration --------------------------*/
   if(((PeriphClkInit->PeriphClockSelection) & RCC_PERIPHCLK_RTC) == (RCC_PERIPHCLK_RTC))
-  {
+  {    
     /* Enable Power Clock*/
-    __PWR_CLK_ENABLE();
+    __HAL_RCC_PWR_CLK_ENABLE();
     
     /* Enable write access to Backup domain */
     PWR->CR |= PWR_CR_DBP;
     
-    /* Wait for Backup domain Write protection disable */
-    timeout = HAL_GetTick() + DBP_TIMEOUT_VALUE;
+    /* Get tick */
+    tickstart = HAL_GetTick();
     
     while((PWR->CR & PWR_CR_DBP) == RESET)
     {
-      if(HAL_GetTick() >= timeout)
+      if((HAL_GetTick() - tickstart ) > RCC_DBP_TIMEOUT_VALUE)
       {
         return HAL_TIMEOUT;
       }      
     }
-        
-    /* Reset the Backup domain only if the RTC Clock source selction is modified */ 
+    /* Reset the Backup domain only if the RTC Clock source selection is modified */
     if((RCC->BDCR & RCC_BDCR_RTCSEL) != (PeriphClkInit->RTCClockSelection & RCC_BDCR_RTCSEL))
     {
       /* Store the content of BDCR register before the reset of Backup Domain */
-      tmpreg = (RCC->BDCR & ~(RCC_BDCR_RTCSEL));
+      tmpreg1 = (RCC->BDCR & ~(RCC_BDCR_RTCSEL));
       /* RTC Clock selection can be changed only if the Backup Domain is reset */
       __HAL_RCC_BACKUPRESET_FORCE();
       __HAL_RCC_BACKUPRESET_RELEASE();
       /* Restore the Content of BDCR register */
-      RCC->BDCR = tmpreg;
-    }
-      
-    /* If LSE is selected as RTC clock source, wait for LSE reactivation */
-    if(PeriphClkInit->RTCClockSelection == RCC_RTCCLKSOURCE_LSE)
-    {
-      /* Get timeout */
-      timeout = HAL_GetTick() + LSE_TIMEOUT_VALUE;
-      
-      /* Wait till LSE is ready */  
-      while(__HAL_RCC_GET_FLAG(RCC_FLAG_LSERDY) == RESET)
+      RCC->BDCR = tmpreg1;
+      /* Wait for LSERDY if LSE was enabled */
+      if(HAL_IS_BIT_SET(tmpreg1, RCC_BDCR_LSERDY))
       {
-        if(HAL_GetTick() >= timeout)
+        /* Get tick */
+        tickstart = HAL_GetTick();
+        
+        /* Wait till LSE is ready */
+        while(__HAL_RCC_GET_FLAG(RCC_FLAG_LSERDY) == RESET)
         {
-          return HAL_TIMEOUT;
-        }      
-      }  
+          if((HAL_GetTick() - tickstart ) > RCC_LSE_TIMEOUT_VALUE)
+          {
+            return HAL_TIMEOUT;
+          }
+        }
+      }
+      __HAL_RCC_RTC_CONFIG(PeriphClkInit->RTCClockSelection);
     }
-    __HAL_RCC_RTC_CONFIG(PeriphClkInit->RTCClockSelection); 
   }
-  
+  /*--------------------------------------------------------------------------*/
+
   return HAL_OK;
 }
 
 /**
   * @brief  Configures the RCC_OscInitStruct according to the internal 
   * RCC configuration registers.
-  * @param  RCC_OscInitStruct: pointer to an RCC_OscInitTypeDef structure that 
+  * @param  PeriphClkInit: pointer to an RCC_PeriphCLKInitTypeDef structure that 
   * will be configured.
   * @retval None
   */

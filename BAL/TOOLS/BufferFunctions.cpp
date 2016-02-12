@@ -125,7 +125,20 @@ unsigned int QBuffer::Write(unsigned char *pdata, unsigned int size)
     return WrittenData;
 }
 
+unsigned char QBuffer::IsFull	(void)
+{
+	return (this->count == this->size);
+}
 
+unsigned char QBuffer::IsEmpty (void)
+{
+	return (this->count == 0);
+}
+
+unsigned int QBuffer::Available (void)
+{
+	return this->count;
+}
 
 /******* Queue ******************************************************/
 /**
@@ -255,5 +268,20 @@ unsigned int Queue::WriteFromArray(unsigned char *pdata, unsigned int size)
     this->count += CopiedData;
 
     return CopiedData;
+}
+
+unsigned char Queue::IsFull	(void)
+{
+	return (this->count == this->size);
+}
+
+unsigned char Queue::IsEmpty (void)
+{
+	return (this->count == 0);
+}
+
+unsigned int Queue::Available (void)
+{
+	return this->count;
 }
 

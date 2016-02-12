@@ -1,8 +1,7 @@
 /**
   ******************************************************************************
-  * File Name          : DAC.c
-  * Description        : This file provides code for the configuration
-  *                      of the DAC instances.
+  * File Name          : mxconstants.h
+  * Description        : This file contains the common defines of the application
   ******************************************************************************
   *
   * COPYRIGHT(c) 2016 STMicroelectronics
@@ -31,93 +30,24 @@
   *
   ******************************************************************************
   */
-
 /* Includes ------------------------------------------------------------------*/
-#include "dac.h"
 
+/* USER CODE BEGIN Includes */
 
-/* USER CODE BEGIN 0 */
+/* USER CODE END Includes */
 
-/* USER CODE END 0 */
+/* Private define ------------------------------------------------------------*/
 
-DAC_HandleTypeDef hdac;
+/* USER CODE BEGIN Private defines */
 
-/* DAC init function */
-void MX_DAC_Init(void)
-{
-  DAC_ChannelConfTypeDef sConfig;
-
-    /**DAC Initialization 
-    */
-  hdac.Instance = DAC;
-  HAL_DAC_Init(&hdac);
-
-    /**DAC channel OUT1 config 
-    */
-  sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
-  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
-  HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1);
-
-}
-
-void HAL_DAC_MspInit(DAC_HandleTypeDef* hdac)
-{
-
- // GPIO_InitTypeDef GPIO_InitStruct;
-  if(hdac->Instance==DAC)
-  {
-  /* USER CODE BEGIN DAC_MspInit 0 */
-
-  /* USER CODE END DAC_MspInit 0 */
-    /* Peripheral clock enable */
-    __DAC_CLK_ENABLE();
-  
-    /**DAC GPIO Configuration    
-    PA4     ------> DAC_OUT1 
-    */
-/*    GPIO_InitStruct.Pin = GPIO_PIN_4;
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct); */
-
-  /* USER CODE BEGIN DAC_MspInit 1 */
-
-  /* USER CODE END DAC_MspInit 1 */
-  }
-}
-
-void HAL_DAC_MspDeInit(DAC_HandleTypeDef* hdac)
-{
-
-  if(hdac->Instance==DAC)
-  {
-  /* USER CODE BEGIN DAC_MspDeInit 0 */
-
-  /* USER CODE END DAC_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __DAC_CLK_DISABLE();
-  
-    /**DAC GPIO Configuration    
-    PA4     ------> DAC_OUT1 
-    */
-  //  HAL_GPIO_DeInit(GPIOA, GPIO_PIN_4);
-
-  }
-  /* USER CODE BEGIN DAC_MspDeInit 1 */
-
-  /* USER CODE END DAC_MspDeInit 1 */
-} 
-
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
+/* USER CODE END Private defines */
 
 /**
   * @}
-  */
+  */ 
 
 /**
   * @}
-  */
+*/ 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

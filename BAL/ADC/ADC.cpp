@@ -13,6 +13,10 @@
 /* Exported variables	  --------------------------------------------------------*/
 ADCInstance ADCObj;
 
+ADC_HandleTypeDef hadc;
+DMA_HandleTypeDef hdma_adc1;
+
+
 /* private variables	  --------------------------------------------------------*/
 static GPIO_TypeDef* GPIOPortList[NUMBER_OF_AN_INPUTS] = {AN1_PORT, AN2_PORT,
 														  AN3_PORT, AN4_PORT,
@@ -35,26 +39,75 @@ void ADCInstance::Initialization(void)
 {
 	ADC_ChannelConfTypeDef sConfig;
 
+	/* DMA controller clock enable */
+	__DMA2_CLK_ENABLE();
+
+	/* DMA interrupt init */
+	HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
+	HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+
 	/**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
 	*/
 	hadc.Instance = ADC1;
 	hadc.Init.ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV2;
 	hadc.Init.Resolution = ADC_RESOLUTION12b;
-	hadc.Init.ScanConvMode = DISABLE;
-	hadc.Init.ContinuousConvMode = DISABLE;
+	hadc.Init.ScanConvMode = ENABLE;
+	hadc.Init.ContinuousConvMode = ENABLE;
 	hadc.Init.DiscontinuousConvMode = DISABLE;
 	hadc.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
 	hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-	hadc.Init.NbrOfConversion = 1;
-	hadc.Init.DMAContinuousRequests = DISABLE;
-	hadc.Init.EOCSelection = EOC_SINGLE_CONV;
+	hadc.Init.NbrOfConversion = 8;
+	hadc.Init.DMAContinuousRequests = ENABLE;
+	hadc.Init.EOCSelection = EOC_SEQ_CONV;
 	HAL_ADC_Init(&hadc);
 
 	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
 	*/
-	sConfig.Channel = ADC_CHANNEL_9;
+	sConfig.Channel = ADC_CHANNEL_8;
 	sConfig.Rank = 1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_9;
+	sConfig.Rank = 2;
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_10;
+	sConfig.Rank = 3;
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_11;
+	sConfig.Rank = 4;
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_12;
+	sConfig.Rank = 5;
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_13;
+	sConfig.Rank = 6;
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_14;
+	sConfig.Rank = 7;
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_15;
+	sConfig.Rank = 8;
 	HAL_ADC_ConfigChannel(&hadc, &sConfig);
 }
 

@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f2xx_hal_pwr_ex.c
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    25-March-2014
+  * @version V1.1.2
+  * @date    11-December-2015
   * @brief   Extended PWR HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities of PWR extension peripheral:           
@@ -12,7 +12,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -46,7 +46,7 @@
   * @{
   */
 
-/** @defgroup PWREx 
+/** @defgroup PWREx PWREx
   * @brief PWR HAL module driver
   * @{
   */
@@ -55,17 +55,24 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
+/** @addtogroup PWREx_Private_Constants
+  * @{
+  */    
 #define PWR_BKPREG_TIMEOUT_VALUE     1000
+/**
+  * @}
+  */
+
+   
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
-
-/** @defgroup PWREx_Private_Functions
-  * @{
+/** @defgroup PWREx_Exported_Functions PWR Exported Functions
+  *  @{
   */
 
-/** @defgroup PWREx_Group1 Peripheral Extended features functions 
+/** @defgroup PWREx_Exported_Functions_Group1 Peripheral Extended features functions 
   *  @brief Peripheral Extended features functions 
   *
 @verbatim   
@@ -81,7 +88,7 @@
           the CPU, and address in 32-bit, 16-bit or 8-bit mode. Its content is 
           retained even in Standby or VBAT mode when the low power backup regulator
           is enabled. It can be considered as an internal EEPROM when VBAT is 
-          always present. You can use the HAL_PWR_EnableBkUpReg() function to 
+          always present. You can use the HAL_PWREx_EnableBkUpReg() function to 
           enable the low power backup regulator. 
 
       (+) When the backup domain is supplied by VDD (analog switch connected to VDD) 
@@ -102,7 +109,7 @@
     =======================================
     [..] 
       (+) By setting the FPDS bit in the PWR_CR register by using the 
-          HAL_PWR_EnableFlashPowerDown() function, the Flash memory also enters power 
+          HAL_PWREx_EnableFlashPowerDown() function, the Flash memory also enters power 
           down mode when the device enters Stop mode. When the Flash memory 
           is in power down mode, an additional startup delay is incurred when 
           waking up from Stop mode.
@@ -113,21 +120,21 @@
 
 /**
   * @brief Enables the Backup Regulator.
-  * @param None
   * @retval HAL status
   */
 HAL_StatusTypeDef HAL_PWREx_EnableBkUpReg(void)
 {
-  uint32_t timeout = 0;   
+  uint32_t tickstart = 0;
 
   *(__IO uint32_t *) CSR_BRE_BB = (uint32_t)ENABLE;
 
-  /* Get timeout */
-  timeout = HAL_GetTick() + PWR_BKPREG_TIMEOUT_VALUE;
+  /* Get tick */
+  tickstart = HAL_GetTick();
+
   /* Wait till Backup regulator ready flag is set */  
   while(__HAL_PWR_GET_FLAG(PWR_FLAG_BRR) == RESET)
   {
-    if(HAL_GetTick() >= timeout)
+    if((HAL_GetTick() - tickstart ) > PWR_BKPREG_TIMEOUT_VALUE)
     {
       return HAL_TIMEOUT;
     } 
@@ -137,21 +144,21 @@ HAL_StatusTypeDef HAL_PWREx_EnableBkUpReg(void)
 
 /**
   * @brief Disables the Backup Regulator.
-  * @param None
-  * @retval None
+  * @retval HAL status
   */
 HAL_StatusTypeDef HAL_PWREx_DisableBkUpReg(void)
 {
-  uint32_t timeout = 0; 
+  uint32_t tickstart = 0;
 
   *(__IO uint32_t *) CSR_BRE_BB = (uint32_t)DISABLE;
 
-  /* Get timeout */
-  timeout = HAL_GetTick() + PWR_BKPREG_TIMEOUT_VALUE;
+  /* Get tick */
+  tickstart = HAL_GetTick();
+
   /* Wait till Backup regulator ready flag is set */  
   while(__HAL_PWR_GET_FLAG(PWR_FLAG_BRR) != RESET)
   {
-    if(HAL_GetTick() >= timeout)
+    if((HAL_GetTick() - tickstart ) > PWR_BKPREG_TIMEOUT_VALUE)
     {
       return HAL_TIMEOUT;
     } 
@@ -161,7 +168,6 @@ HAL_StatusTypeDef HAL_PWREx_DisableBkUpReg(void)
 
 /**
   * @brief Enables the Flash Power Down in Stop mode.
-  * @param None
   * @retval None
   */
 void HAL_PWREx_EnableFlashPowerDown(void)
@@ -171,7 +177,6 @@ void HAL_PWREx_EnableFlashPowerDown(void)
 
 /**
   * @brief Disables the Flash Power Down in Stop mode.
-  * @param None
   * @retval None
   */
 void HAL_PWREx_DisableFlashPowerDown(void)
@@ -186,7 +191,6 @@ void HAL_PWREx_DisableFlashPowerDown(void)
 /**
   * @}
   */
-
 #endif /* HAL_PWR_MODULE_ENABLED */
 /**
   * @}

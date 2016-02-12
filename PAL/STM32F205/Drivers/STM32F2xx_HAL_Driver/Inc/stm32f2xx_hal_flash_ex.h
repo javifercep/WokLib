@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f2xx_hal_flash_ex.h
   * @author  MCD Application Team
-  * @version V1.0.1
-  * @date    25-March-2014
+  * @version V1.1.2
+  * @date    11-December-2015
   * @brief   Header file of FLASH HAL Extension module.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -55,22 +55,28 @@
   */ 
 
 /* Exported types ------------------------------------------------------------*/ 
+/** @defgroup FLASHEx_Exported_Types FLASH Exported Types
+  * @{
+  */
 
 /**
   * @brief  FLASH Erase structure definition
   */
 typedef struct
 {
-  uint32_t TypeErase;   /*!< TypeErase: Mass erase or sector Erase.
+  uint32_t TypeErase;   /*!< Mass erase or sector Erase.
                              This parameter can be a value of @ref FLASHEx_Type_Erase */
 
-  uint32_t Sector;      /*!< Sector: Initial FLASH sector to erase when Mass erase is disabled
+  uint32_t Banks;       /*!< Select banks to erase when Mass erase is enabled.
+                             This parameter must be a value of @ref FLASHEx_Banks */        
+
+  uint32_t Sector;      /*!< Initial FLASH sector to erase when Mass erase is disabled
                              This parameter must be a value of @ref FLASHEx_Sectors */        
   
-  uint32_t NbSectors;   /*!< NbSectors: Number of sectors to be erased.
+  uint32_t NbSectors;   /*!< Number of sectors to be erased.
                              This parameter must be a value between 1 and (max number of sectors - value of Initial sector)*/           
                                                           
-  uint32_t VoltageRange;/*!< VoltageRange: The device voltage range which defines the erase parallelism
+  uint32_t VoltageRange;/*!< The device voltage range which defines the erase parallelism
                              This parameter must be a value of @ref FLASHEx_Voltage_Range */        
   
 } FLASH_EraseInitTypeDef;
@@ -80,41 +86,39 @@ typedef struct
   */
 typedef struct
 {
-  uint32_t OptionType;   /*!< OptionType: Option byte to be configured.
+  uint32_t OptionType;   /*!< Option byte to be configured.
                               This parameter can be a value of @ref FLASHEx_Option_Type */
 
-  uint32_t WRPState;     /*!< WRPState: Write protection activation or deactivation.
+  uint32_t WRPState;     /*!< Write protection activation or deactivation.
                               This parameter can be a value of @ref FLASHEx_WRP_State */
 
-  uint32_t WRPSector;         /*!< WRPSector: specifies the sector(s) to be write protected
+  uint32_t WRPSector;         /*!< Specifies the sector(s) to be write protected.
                               The value of this parameter depend on device used within the same series */
 
-  uint32_t RDPLevel;     /*!< RDPLevel: Set the read protection level..
+  uint32_t Banks;        /*!< Select banks for WRP activation/deactivation of all sectors.
+                              This parameter must be a value of @ref FLASHEx_Banks */        
+
+  uint32_t RDPLevel;     /*!< Set the read protection level.
                               This parameter can be a value of @ref FLASHEx_Option_Bytes_Read_Protection */
 
-  uint32_t BORLevel;     /*!< BORLevel: Set the BOR Level.
+  uint32_t BORLevel;     /*!< Set the BOR Level.
                               This parameter can be a value of @ref FLASHEx_BOR_Reset_Level */
 
-  uint8_t  USERConfig;   /*!< USERConfig: Program the FLASH User Option Byte: IWDG_SW / RST_STOP / RST_STDBY.
-                              This parameter can be a combination of @ref FLASHEx_Option_Bytes_IWatchdog, @ref FLASHEx_Option_Bytes_nRST_STOP and @ref FLASHEx_Option_Bytes_nRST_STDBY*/
+  uint8_t  USERConfig;   /*!< Program the FLASH User Option Byte: IWDG_SW / RST_STOP / RST_STDBY. */
 
 } FLASH_OBProgramInitTypeDef;
 
 /* Exported constants --------------------------------------------------------*/
 
-/** @defgroup FLASH_Exported_Constants FLASH Exported Constants
+/** @defgroup FLASHEx_Exported_Constants FLASH Exported Constants
   * @{
   */
 
 /** @defgroup FLASHEx_Type_Erase FLASH Type Erase
   * @{
   */ 
-#define TYPEERASE_SECTORS         ((uint32_t)0x00)  /*!< Sectors erase only          */
-#define TYPEERASE_MASSERASE       ((uint32_t)0x01)  /*!< Flash Mass erase activation */
-
-#define IS_TYPEERASE(VALUE)(((VALUE) == TYPEERASE_SECTORS) || \
-                               ((VALUE) == TYPEERASE_MASSERASE))  
-
+#define FLASH_TYPEERASE_SECTORS         ((uint32_t)0x00)  /*!< Sectors erase only          */
+#define FLASH_TYPEERASE_MASSERASE       ((uint32_t)0x01)  /*!< Flash Mass erase activation */
 /**
   * @}
   */
@@ -122,16 +126,10 @@ typedef struct
 /** @defgroup FLASHEx_Voltage_Range FLASH Voltage Range
   * @{
   */ 
-#define VOLTAGE_RANGE_1        ((uint32_t)0x00)  /*!< Device operating range: 1.8V to 2.1V                */
-#define VOLTAGE_RANGE_2        ((uint32_t)0x01)  /*!< Device operating range: 2.1V to 2.7V                */
-#define VOLTAGE_RANGE_3        ((uint32_t)0x02)  /*!< Device operating range: 2.7V to 3.6V                */
-#define VOLTAGE_RANGE_4        ((uint32_t)0x03)  /*!< Device operating range: 2.7V to 3.6V + External Vpp */
-
-#define IS_VOLTAGERANGE(RANGE)(((RANGE) == VOLTAGE_RANGE_1) || \
-                               ((RANGE) == VOLTAGE_RANGE_2) || \
-                               ((RANGE) == VOLTAGE_RANGE_3) || \
-                               ((RANGE) == VOLTAGE_RANGE_4))  
-                              
+#define FLASH_VOLTAGE_RANGE_1        ((uint32_t)0x00)  /*!< Device operating range: 1.8V to 2.1V                */
+#define FLASH_VOLTAGE_RANGE_2        ((uint32_t)0x01)  /*!< Device operating range: 2.1V to 2.7V                */
+#define FLASH_VOLTAGE_RANGE_3        ((uint32_t)0x02)  /*!< Device operating range: 2.7V to 3.6V                */
+#define FLASH_VOLTAGE_RANGE_4        ((uint32_t)0x03)  /*!< Device operating range: 2.7V to 3.6V + External Vpp */
 /**
   * @}
   */
@@ -139,12 +137,8 @@ typedef struct
 /** @defgroup FLASHEx_WRP_State FLASH WRP State
   * @{
   */ 
-#define WRPSTATE_DISABLE       ((uint32_t)0x00)  /*!< Disable the write protection of the desired bank 1 sectors */
-#define WRPSTATE_ENABLE        ((uint32_t)0x01)  /*!< Enable the write protection of the desired bank 1 sectors  */
-
-#define IS_WRPSTATE(VALUE)(((VALUE) == WRPSTATE_DISABLE) || \
-                           ((VALUE) == WRPSTATE_ENABLE))  
-
+#define OB_WRPSTATE_DISABLE       ((uint32_t)0x00)  /*!< Disable the write protection of the desired bank 1 sectors */
+#define OB_WRPSTATE_ENABLE        ((uint32_t)0x01)  /*!< Enable the write protection of the desired bank 1 sectors  */
 /**
   * @}
   */
@@ -156,9 +150,6 @@ typedef struct
 #define OPTIONBYTE_RDP        ((uint32_t)0x02)  /*!< RDP option byte configuration  */
 #define OPTIONBYTE_USER       ((uint32_t)0x04)  /*!< USER option byte configuration */
 #define OPTIONBYTE_BOR        ((uint32_t)0x08)  /*!< BOR option byte configuration  */
-
-#define IS_OPTIONBYTE(VALUE)(((VALUE) < (OPTIONBYTE_WRP|OPTIONBYTE_RDP|OPTIONBYTE_USER|OPTIONBYTE_BOR)))
-
 /**
   * @}
   */
@@ -168,11 +159,8 @@ typedef struct
   */
 #define OB_RDP_LEVEL_0   ((uint8_t)0xAA)
 #define OB_RDP_LEVEL_1   ((uint8_t)0x55)
-/*#define OB_RDP_LEVEL_2   ((uint8_t)0xCC)*/ /*!< Warning: When enabling read protection level 2 
-                                                  it s no more possible to go back to level 1 or 0 */
-#define IS_OB_RDP_LEVEL(LEVEL) (((LEVEL) == OB_RDP_LEVEL_0)   ||\
-                                ((LEVEL) == OB_RDP_LEVEL_1))/*||\
-                                ((LEVEL) == OB_RDP_LEVEL_2))*/
+#define OB_RDP_LEVEL_2   ((uint8_t)0xCC)   /*!< Warning: When enabling read protection level 2 
+                                            it s no more possible to go back to level 1 or 0 */
 /**
   * @}
   */ 
@@ -182,7 +170,6 @@ typedef struct
   */ 
 #define OB_IWDG_SW                     ((uint8_t)0x20)  /*!< Software IWDG selected */
 #define OB_IWDG_HW                     ((uint8_t)0x00)  /*!< Hardware IWDG selected */
-#define IS_OB_IWDG_SOURCE(SOURCE) (((SOURCE) == OB_IWDG_SW) || ((SOURCE) == OB_IWDG_HW))
 /**
   * @}
   */ 
@@ -192,7 +179,6 @@ typedef struct
   */ 
 #define OB_STOP_NO_RST                 ((uint8_t)0x40) /*!< No reset generated when entering in STOP */
 #define OB_STOP_RST                    ((uint8_t)0x00) /*!< Reset generated when entering in STOP    */
-#define IS_OB_STOP_SOURCE(SOURCE) (((SOURCE) == OB_STOP_NO_RST) || ((SOURCE) == OB_STOP_RST))
 /**
   * @}
   */ 
@@ -203,7 +189,6 @@ typedef struct
   */ 
 #define OB_STDBY_NO_RST                ((uint8_t)0x80) /*!< No reset generated when entering in STANDBY */
 #define OB_STDBY_RST                   ((uint8_t)0x00) /*!< Reset generated when entering in STANDBY    */
-#define IS_OB_STDBY_SOURCE(SOURCE) (((SOURCE) == OB_STDBY_NO_RST) || ((SOURCE) == OB_STDBY_RST))
 /**
   * @}
   */    
@@ -215,8 +200,11 @@ typedef struct
 #define OB_BOR_LEVEL2          ((uint8_t)0x04)  /*!< Supply voltage ranges from 2.40 to 2.70 V */
 #define OB_BOR_LEVEL1          ((uint8_t)0x08)  /*!< Supply voltage ranges from 2.10 to 2.40 V */
 #define OB_BOR_OFF             ((uint8_t)0x0C)  /*!< Supply voltage ranges from 1.62 to 2.10 V */
-#define IS_OB_BOR_LEVEL(LEVEL) (((LEVEL) == OB_BOR_LEVEL1) || ((LEVEL) == OB_BOR_LEVEL2) ||\
-                                ((LEVEL) == OB_BOR_LEVEL3) || ((LEVEL) == OB_BOR_OFF))
+/**
+  * @}
+  */
+
+
 /**
   * @}
   */
@@ -233,18 +221,27 @@ typedef struct
 #define FLASH_LATENCY_6                FLASH_ACR_LATENCY_6WS   /*!< FLASH Six Latency cycles      */
 #define FLASH_LATENCY_7                FLASH_ACR_LATENCY_7WS   /*!< FLASH Seven Latency cycles    */
 
-#define IS_FLASH_LATENCY(LATENCY) (((LATENCY) == FLASH_LATENCY_0)  || \
-                                   ((LATENCY) == FLASH_LATENCY_1)  || \
-                                   ((LATENCY) == FLASH_LATENCY_2)  || \
-                                   ((LATENCY) == FLASH_LATENCY_3)  || \
-                                   ((LATENCY) == FLASH_LATENCY_4)  || \
-                                   ((LATENCY) == FLASH_LATENCY_5)  || \
-                                   ((LATENCY) == FLASH_LATENCY_6)  || \
-                                   ((LATENCY) == FLASH_LATENCY_7))
 /**
   * @}
   */ 
   
+
+/** @defgroup FLASHEx_Banks FLASH Banks
+  * @{
+  */
+#define FLASH_BANK_1     ((uint32_t)1) /*!< Bank 1   */
+/**
+  * @}
+  */ 
+    
+/** @defgroup FLASHEx_MassErase_bit FLASH Mass Erase bit
+  * @{
+  */
+#define FLASH_MER_BIT     (FLASH_CR_MER) /*!< only 1 MER Bit */
+/**
+  * @}
+  */ 
+
 /** @defgroup FLASHEx_Sectors FLASH Sectors
   * @{
   */
@@ -261,19 +258,7 @@ typedef struct
 #define FLASH_SECTOR_10    ((uint32_t)10) /*!< Sector Number 10  */
 #define FLASH_SECTOR_11    ((uint32_t)11) /*!< Sector Number 11  */
 
-#define FLASH_SECTOR_TOTAL 12 
 
-#define IS_FLASH_SECTOR(SECTOR) (((SECTOR) == FLASH_SECTOR_0)   || ((SECTOR) == FLASH_SECTOR_1) ||\
-                                 ((SECTOR) == FLASH_SECTOR_2)   || ((SECTOR) == FLASH_SECTOR_3) ||\
-                                 ((SECTOR) == FLASH_SECTOR_4)   || ((SECTOR) == FLASH_SECTOR_5) ||\
-                                 ((SECTOR) == FLASH_SECTOR_6)   || ((SECTOR) == FLASH_SECTOR_7) ||\
-                                 ((SECTOR) == FLASH_SECTOR_8)   || ((SECTOR) == FLASH_SECTOR_9) ||\
-                                 ((SECTOR) == FLASH_SECTOR_10)  || ((SECTOR) == FLASH_SECTOR_11))
-
-#define IS_FLASH_ADDRESS(ADDRESS) ((((ADDRESS) >= 0x08000000) && ((ADDRESS) < 0x080FFFFF)) ||\
-                                   (((ADDRESS) >= 0x1FFF7800) && ((ADDRESS) < 0x1FFF7A0F)))
-
-#define IS_NBSECTORS(NBSECTORS) (((NBSECTORS) != 0) && ((NBSECTORS) <= FLASH_SECTOR_TOTAL))
 
 /**
   * @}
@@ -296,22 +281,133 @@ typedef struct
 #define OB_WRP_SECTOR_11      ((uint32_t)0x00000800) /*!< Write protection of Sector11 */
 #define OB_WRP_SECTOR_All     ((uint32_t)0x00000FFF) /*!< Write protection of all Sectors */
 
-#define IS_OB_WRP_SECTOR(SECTOR)((((SECTOR) & (uint32_t)0xFFFFF000) == 0x00000000) && ((SECTOR) != 0x00000000))
+
+/**
+  * @}
+  */
+
 /**
   * @}
   */ 
-
+  
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions --------------------------------------------------------*/
+/** @addtogroup FLASHEx_Exported_Functions
+  * @{
+  */
 
+/** @addtogroup FLASHEx_Exported_Functions_Group1
+  * @{
+  */
 /* Extension Program operation functions  *************************************/
 HAL_StatusTypeDef HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef *pEraseInit, uint32_t *SectorError);
 HAL_StatusTypeDef HAL_FLASHEx_Erase_IT(FLASH_EraseInitTypeDef *pEraseInit);
 HAL_StatusTypeDef HAL_FLASHEx_OBProgram(FLASH_OBProgramInitTypeDef *pOBInit);
 void              HAL_FLASHEx_OBGetConfig(FLASH_OBProgramInitTypeDef *pOBInit);
 
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+/* Private types -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/** @defgroup FLASHEx_Private_Variables FLASH Private Variables
+  * @{
+  */
+
+/**
+  * @}
+  */
+/* Private constants ---------------------------------------------------------*/
+/** @defgroup FLASHEx_Private_Constants FLASH Private Constants
+  * @{
+  */
+
+#define FLASH_SECTOR_TOTAL  12
+
+/**
+  * @}
+  */
+
+/* Private macros ------------------------------------------------------------*/
+/** @defgroup FLASHEx_Private_Macros FLASH Private Macros
+  * @{
+  */
+
+/** @defgroup FLASHEx_IS_FLASH_Definitions FLASH Private macros to check input parameters
+  * @{
+  */
+
+#define IS_FLASH_TYPEERASE(VALUE)(((VALUE) == FLASH_TYPEERASE_SECTORS) || \
+                                  ((VALUE) == FLASH_TYPEERASE_MASSERASE))  
+
+#define IS_VOLTAGERANGE(RANGE)(((RANGE) == FLASH_VOLTAGE_RANGE_1) || \
+                               ((RANGE) == FLASH_VOLTAGE_RANGE_2) || \
+                               ((RANGE) == FLASH_VOLTAGE_RANGE_3) || \
+                               ((RANGE) == FLASH_VOLTAGE_RANGE_4))  
+
+#define IS_WRPSTATE(VALUE)(((VALUE) == OB_WRPSTATE_DISABLE) || \
+                           ((VALUE) == OB_WRPSTATE_ENABLE))  
+
+#define IS_OPTIONBYTE(VALUE)(((VALUE) <= (OPTIONBYTE_WRP|OPTIONBYTE_RDP|OPTIONBYTE_USER|OPTIONBYTE_BOR)))
+
+#define IS_OB_RDP_LEVEL(LEVEL) (((LEVEL) == OB_RDP_LEVEL_0)   ||\
+                                ((LEVEL) == OB_RDP_LEVEL_1)   ||\
+                                ((LEVEL) == OB_RDP_LEVEL_2))
+
+#define IS_OB_IWDG_SOURCE(SOURCE) (((SOURCE) == OB_IWDG_SW) || ((SOURCE) == OB_IWDG_HW))
+
+#define IS_OB_STOP_SOURCE(SOURCE) (((SOURCE) == OB_STOP_NO_RST) || ((SOURCE) == OB_STOP_RST))
+
+#define IS_OB_STDBY_SOURCE(SOURCE) (((SOURCE) == OB_STDBY_NO_RST) || ((SOURCE) == OB_STDBY_RST))
+
+#define IS_OB_BOR_LEVEL(LEVEL) (((LEVEL) == OB_BOR_LEVEL1) || ((LEVEL) == OB_BOR_LEVEL2) ||\
+                                ((LEVEL) == OB_BOR_LEVEL3) || ((LEVEL) == OB_BOR_OFF))
+
+
+#define IS_FLASH_LATENCY(LATENCY) (((LATENCY) == FLASH_LATENCY_0)  || \
+                                   ((LATENCY) == FLASH_LATENCY_1)  || \
+                                   ((LATENCY) == FLASH_LATENCY_2)  || \
+                                   ((LATENCY) == FLASH_LATENCY_3)  || \
+                                   ((LATENCY) == FLASH_LATENCY_4)  || \
+                                   ((LATENCY) == FLASH_LATENCY_5)  || \
+                                   ((LATENCY) == FLASH_LATENCY_6)  || \
+                                   ((LATENCY) == FLASH_LATENCY_7))
+#define IS_FLASH_BANK(BANK) (((BANK) == FLASH_BANK_1))
+#define IS_FLASH_SECTOR(SECTOR) (((SECTOR) == FLASH_SECTOR_0)   || ((SECTOR) == FLASH_SECTOR_1)   ||\
+                                 ((SECTOR) == FLASH_SECTOR_2)   || ((SECTOR) == FLASH_SECTOR_3)   ||\
+                                 ((SECTOR) == FLASH_SECTOR_4)   || ((SECTOR) == FLASH_SECTOR_5)   ||\
+                                 ((SECTOR) == FLASH_SECTOR_6)   || ((SECTOR) == FLASH_SECTOR_7)   ||\
+                                 ((SECTOR) == FLASH_SECTOR_8)   || ((SECTOR) == FLASH_SECTOR_9)   ||\
+                                 ((SECTOR) == FLASH_SECTOR_10)  || ((SECTOR) == FLASH_SECTOR_11))
+
+
+
+#define IS_FLASH_ADDRESS(ADDRESS) (((ADDRESS) >= FLASH_BASE) && ((ADDRESS) <= FLASH_END))
+#define IS_FLASH_NBSECTORS(NBSECTORS) (((NBSECTORS) != 0) && ((NBSECTORS) <= FLASH_SECTOR_TOTAL))
+#define IS_OB_WRP_SECTOR(SECTOR)((((SECTOR) & (uint32_t)0xFFFFF000) == 0x00000000) && ((SECTOR) != 0x00000000))
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+  */
+
+/* Private functions ---------------------------------------------------------*/
+/** @defgroup FLASHEx_Private_Functions FLASH Private Functions
+  * @{
+  */
 void FLASH_Erase_Sector(uint32_t Sector, uint8_t VoltageRange);
+void FLASH_FlushCaches(void);
+/**
+  * @}
+  */ 
 
 /**
   * @}
@@ -321,9 +417,6 @@ void FLASH_Erase_Sector(uint32_t Sector, uint8_t VoltageRange);
   * @}
   */
 
-/**
-  * @}
-  */  
 #ifdef __cplusplus
 }
 #endif

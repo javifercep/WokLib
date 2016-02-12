@@ -40,6 +40,8 @@
  extern "C" {
 #endif
 
+#include "mxconstants.h" 
+
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
@@ -59,18 +61,15 @@
 //#define HAL_NOR_MODULE_ENABLED   
 //#define HAL_PCCARD_MODULE_ENABLED   
 //#define HAL_SRAM_MODULE_ENABLED   
-//#define HAL_SDRAM_MODULE_ENABLED   
 //#define HAL_HASH_MODULE_ENABLED   
 #define HAL_I2C_MODULE_ENABLED
 //#define HAL_I2S_MODULE_ENABLED   
 //#define HAL_IWDG_MODULE_ENABLED   
-//#define HAL_LTDC_MODULE_ENABLED   
 //#define HAL_RNG_MODULE_ENABLED   
 //#define HAL_RTC_MODULE_ENABLED   
-//#define HAL_SAI_MODULE_ENABLED   
 #define HAL_SD_MODULE_ENABLED
 #define HAL_SPI_MODULE_ENABLED
-//#define HAL_TIM_MODULE_ENABLED   
+#define HAL_TIM_MODULE_ENABLED
 #define HAL_UART_MODULE_ENABLED
 //#define HAL_USART_MODULE_ENABLED   
 //#define HAL_IRDA_MODULE_ENABLED   
@@ -96,7 +95,7 @@
 #endif /* HSE_VALUE */
 
 #if !defined  (HSE_STARTUP_TIMEOUT)
-  #define HSE_STARTUP_TIMEOUT    ((uint32_t)5000)   /*!< Time out for HSE start up, in ms */
+  #define HSE_STARTUP_TIMEOUT    ((uint32_t)100)   /*!< Time out for HSE start up, in ms */
 #endif /* HSE_STARTUP_TIMEOUT */
 
 /**
@@ -107,6 +106,21 @@
 #if !defined  (HSI_VALUE)
   #define HSI_VALUE    ((uint32_t)16000000) /*!< Value of the Internal oscillator in Hz*/
 #endif /* HSI_VALUE */
+
+/**
+  * @brief Internal Low Speed oscillator (LSI) value.
+  */
+#if !defined  (LSI_VALUE) 
+ #define LSI_VALUE  ((uint32_t)32000)       /*!< LSI Typical Value in Hz*/
+#endif /* LSI_VALUE */                      /*!< Value of the Internal Low Speed oscillator in Hz
+                                             The real value may vary depending on the variations
+                                             in voltage and temperature.*/
+/**
+  * @brief External Low Speed oscillator (LSE) value.
+  */
+#if !defined  (LSE_VALUE)
+ #define LSE_VALUE  ((uint32_t)32768)    /*!< Value of the External Low Speed oscillator in Hz */
+#endif /* LSE_VALUE */
 
 /**
   * @brief External clock source for I2S peripheral
@@ -125,6 +139,7 @@
   * @brief This is the HAL system configuration section
   */     
 #define  VDD_VALUE                    ((uint32_t)3300) /*!< Value of VDD in mv */           
+#define  TICK_INT_PRIORITY            ((uint32_t)0) /*!< tick interrupt priority */
 #define  USE_RTOS                     0     
 #define  PREFETCH_ENABLE              1              
 #define  INSTRUCTION_CACHE_ENABLE     1
@@ -210,7 +225,7 @@
 
 #ifdef HAL_RCC_MODULE_ENABLED
   #include "stm32f2xx_hal_rcc.h"
- #endif /* HAL_RCC_MODULE_ENABLED */
+#endif /* HAL_RCC_MODULE_ENABLED */
 
 #ifdef HAL_GPIO_MODULE_ENABLED
   #include "stm32f2xx_hal_gpio.h"
@@ -237,7 +252,7 @@
 #endif /* HAL_CRC_MODULE_ENABLED */
 
 #ifdef HAL_CRYP_MODULE_ENABLED
-  #include "stm32f2xx_hal_cryp.h"
+  #include "stm32f2xx_hal_cryp.h" 
 #endif /* HAL_CRYP_MODULE_ENABLED */
 
 #ifdef HAL_DAC_MODULE_ENABLED
@@ -355,7 +370,7 @@
   void assert_failed(uint8_t* file, uint32_t line);
 #else
   #define assert_param(expr) ((void)0)
-#endif /* USE_FULL_ASSERT */    
+#endif /* USE_FULL_ASSERT */
 
 #ifdef __cplusplus
 }

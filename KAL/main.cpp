@@ -34,7 +34,6 @@ int main(void)
   LEDS.On(LED3);
   LEDS.Off(LED4);
 
-  USBObj.Initialization();
   RTOS.Initialization();
 
   /* Infinite loop */

@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    sd_diskio.c
   * @author  MCD Application Team
-  * @version V1.0.0
-  * @date    18-February-2014
+  * @version V1.3.0
+  * @date    08-May-2015
   * @brief   SD Disk I/O driver
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT 2014 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT 2015 STMicroelectronics</center></h2>
   *
   * Licensed under MCD-ST Liberty SW License Agreement V2, (the "License");
   * You may not use this file except in compliance with the License.
@@ -39,17 +39,17 @@
 static volatile DSTATUS Stat = STA_NOINIT;
 
 /* Private function prototypes -----------------------------------------------*/
-DSTATUS SD_initialize (void);
-DSTATUS SD_status (void);
-DRESULT SD_read (BYTE*, DWORD, BYTE);
+DSTATUS SD_initialize (BYTE);
+DSTATUS SD_status (BYTE);
+DRESULT SD_read (BYTE, BYTE*, DWORD, UINT);
 #if _USE_WRITE == 1
-  DRESULT SD_write (const BYTE*, DWORD, BYTE);
+  DRESULT SD_write (BYTE, const BYTE*, DWORD, UINT);
 #endif /* _USE_WRITE == 1 */
 #if _USE_IOCTL == 1
-  DRESULT SD_ioctl (BYTE, void*);
+  DRESULT SD_ioctl (BYTE, BYTE, void*);
 #endif  /* _USE_IOCTL == 1 */
   
-Diskio_drvTypeDef  SD_Driver =
+const Diskio_drvTypeDef  SD_Driver =
 {
   SD_initialize,
   SD_status,
@@ -67,10 +67,10 @@ Diskio_drvTypeDef  SD_Driver =
 
 /**
   * @brief  Initializes a Drive
-  * @param  None
+  * @param  lun : not used 
   * @retval DSTATUS: Operation status
   */
-DSTATUS SD_initialize(void)
+DSTATUS SD_initialize(BYTE lun)
 {
   Stat = STA_NOINIT;
   
@@ -85,14 +85,14 @@ DSTATUS SD_initialize(void)
 
 /**
   * @brief  Gets Disk Status
-  * @param  None
+  * @param  lun : not used
   * @retval DSTATUS: Operation status
   */
-DSTATUS SD_status(void)
+DSTATUS SD_status(BYTE lun)
 {
   Stat = STA_NOINIT;
 
-  if(BSP_SD_GetStatus() == 0)
+  if(BSP_SD_GetStatus() == MSD_OK)
   {
     Stat &= ~STA_NOINIT;
   }
@@ -102,116 +102,63 @@ DSTATUS SD_status(void)
 
 /**
   * @brief  Reads Sector(s)
+  * @param  lun : not used
   * @param  *buff: Data buffer to store read data
   * @param  sector: Sector address (LBA)
   * @param  count: Number of sectors to read (1..128)
   * @retval DRESULT: Operation result
   */
-DRESULT SD_read(BYTE *buff, DWORD sector, BYTE count)
+DRESULT SD_read(BYTE lun, BYTE *buff, DWORD sector, UINT count)
 {
-  uint32_t timeout = 100000;
-  DWORD scratch [BLOCK_SIZE / 4];  /* Alignment ensured, need enough stack */
-  uint8_t SD_state = MSD_OK;
-    
-  if ((DWORD)buff & 3) /* DMA Alignment issue, do single up to aligned buffer */
+  DRESULT res = RES_OK;
+  
+  if(BSP_SD_ReadBlocks((uint32_t*)buff, 
+                       (uint64_t) (sector * BLOCK_SIZE), 
+                       BLOCK_SIZE, 
+                       count) != MSD_OK)
   {
-    while (count--)
-    {
-      SD_state = BSP_SD_ReadBlocks_DMA((uint32_t*)scratch, (uint64_t) ((sector + count) * BLOCK_SIZE), BLOCK_SIZE, 1);
-      
-      while(BSP_SD_GetStatus() != SD_TRANSFER_OK)
-      {
-        if (timeout-- == 0)
-        {
-          return RES_ERROR;
-        }
-      }
-      memcpy (&buff[count * BLOCK_SIZE] ,scratch, BLOCK_SIZE);
-    }
-  }
-  else
-  {
-    SD_state = BSP_SD_ReadBlocks_DMA((uint32_t*)buff, (uint64_t) (sector * BLOCK_SIZE), BLOCK_SIZE, count);
-    
-    while(BSP_SD_GetStatus() != SD_TRANSFER_OK)
-    {  
-      if (timeout-- == 0)
-      {
-        return RES_ERROR;
-      }
-    }
-  }
-  if (SD_state == MSD_OK)
-  {
-    return RES_OK;
+    res = RES_ERROR;
   }
   
-  return RES_ERROR;
+  return res;
 }
 
 /**
   * @brief  Writes Sector(s)
+  * @param  lun : not used
   * @param  *buff: Data to be written
   * @param  sector: Sector address (LBA)
   * @param  count: Number of sectors to write (1..128)
   * @retval DRESULT: Operation result
   */
 #if _USE_WRITE == 1
-DRESULT SD_write(const BYTE *buff, DWORD sector, BYTE count)
+DRESULT SD_write(BYTE lun, const BYTE *buff, DWORD sector, UINT count)
 {
-  uint32_t timeout = 100000;
-  DWORD scratch [BLOCK_SIZE / 4];  /* Alignment ensured, need enough stack */
-  uint8_t SD_state = MSD_OK;
+  DRESULT res = RES_OK;
   
-  if ((DWORD)buff & 3) /* DMA Alignment issue, do single up to aligned buffer */
+  if(BSP_SD_WriteBlocks((uint32_t*)buff, 
+                        (uint64_t)(sector * BLOCK_SIZE), 
+                        BLOCK_SIZE, count) != MSD_OK)
   {
-    while (count--)
-    {
-      memcpy (scratch, &buff[count * BLOCK_SIZE], BLOCK_SIZE);  
-      
-      SD_state = BSP_SD_WriteBlocks_DMA((uint32_t*)scratch, (uint64_t)((sector + count) * BLOCK_SIZE), BLOCK_SIZE, 1);
-      
-      while(BSP_SD_GetStatus() != SD_TRANSFER_OK)
-      {
-        if (timeout-- == 0)
-        {
-          return RES_ERROR;
-        }
-      }
-    }
-  }
-  else
-  {
-    SD_state = BSP_SD_WriteBlocks_DMA((uint32_t*)buff, (uint64_t)(sector * BLOCK_SIZE), BLOCK_SIZE, count);
-    
-    while(BSP_SD_GetStatus() != SD_TRANSFER_OK)
-    {
-      if (timeout-- == 0)
-      {
-        return RES_ERROR;
-      }
-    }
-  }
-  if (SD_state == MSD_OK)
-  {
-    return RES_OK;
+    res = RES_ERROR;
   }
   
-  return RES_ERROR;
+  return res;
 }
 #endif /* _USE_WRITE == 1 */
 
 /**
   * @brief  I/O control operation
+  * @param  lun : not used
   * @param  cmd: Control code
   * @param  *buff: Buffer to send/receive control data
   * @retval DRESULT: Operation result
   */
 #if _USE_IOCTL == 1
-DRESULT SD_ioctl(BYTE cmd, void *buff)
+DRESULT SD_ioctl(BYTE lun, BYTE cmd, void *buff)
 {
   DRESULT res = RES_ERROR;
-  HAL_SD_CardInfoTypedef CardInfo;
+  SD_CardInfo CardInfo;
   
   if (Stat & STA_NOINIT) return RES_NOTRDY;
   

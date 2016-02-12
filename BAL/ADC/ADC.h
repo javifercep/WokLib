@@ -18,7 +18,7 @@
 /* Exported class-------------------------------------------------------------*/
 class ADCInstance {
 private:
-	static ADC_HandleTypeDef hadc;
+	//static ADC_HandleTypeDef hadc;
 public:
 	ADCInstance(void);
 	~ADCInstance(void);

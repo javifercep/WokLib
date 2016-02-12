@@ -11,9 +11,15 @@
 #define __USB_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f2xx.h"
+#include "stm32f2xx_hal.h"
+#include "usbd_def.h"
 
 /* Exported defines	  --------------------------------------------------------*/
 /* Exported types ------------------------------------------------------------*/
+/* Experted variables --------------------------------------------------------*/
+extern USBD_HandleTypeDef hUsbDeviceFS;
+
 /* Exported class-------------------------------------------------------------*/
 class USBInstance {
 
