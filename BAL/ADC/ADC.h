@@ -14,18 +14,20 @@
 #include "stm32f2xx_hal.h"
 
 /* Exported defines	  --------------------------------------------------------*/
+#define NUMBER_OF_ADC_CHANNEL 6
 /* Exported types ------------------------------------------------------------*/
 /* Exported class-------------------------------------------------------------*/
 class ADCInstance {
 private:
 	//static ADC_HandleTypeDef hadc;
+	uint32_t ADCBuffer[NUMBER_OF_ADC_CHANNEL];
 public:
 	ADCInstance(void);
 	~ADCInstance(void);
 	void Initialization(void);
-	void Enable(unsigned int pin);
-	void Disable(unsigned int pin);
-	unsigned int Read(unsigned int pin);
+	void Enable(uint8_t pin);
+	void Disable(uint8_t pin);
+	uint32_t Read(uint8_t pin);
 };
 
 /* Exported variables	  --------------------------------------------------------*/

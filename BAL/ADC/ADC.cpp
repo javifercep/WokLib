@@ -38,6 +38,12 @@ ADCInstance::~ADCInstance(void)
 void ADCInstance::Initialization(void)
 {
 	ADC_ChannelConfTypeDef sConfig;
+	uint8_t ii = 0;
+
+	for(ii = 0; ii < NUMBER_OF_ADC_CHANNEL; ii++)
+	{
+		this->ADCBuffer[ii] = 0;
+	}
 
 	/* DMA controller clock enable */
 	__DMA2_CLK_ENABLE();
@@ -56,7 +62,7 @@ void ADCInstance::Initialization(void)
 	hadc.Init.DiscontinuousConvMode = DISABLE;
 	hadc.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
 	hadc.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-	hadc.Init.NbrOfConversion = 8;
+	hadc.Init.NbrOfConversion = NUMBER_OF_ADC_CHANNEL;
 	hadc.Init.DMAContinuousRequests = ENABLE;
 	hadc.Init.EOCSelection = EOC_SEQ_CONV;
 	HAL_ADC_Init(&hadc);
@@ -64,85 +70,67 @@ void ADCInstance::Initialization(void)
 	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
 	*/
 	sConfig.Channel = ADC_CHANNEL_8;
-	sConfig.Rank = 1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
+	sConfig.Rank = 5;
+	sConfig.SamplingTime = ADC_SAMPLETIME_28CYCLES;
 	HAL_ADC_ConfigChannel(&hadc, &sConfig);
 
 	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
 	*/
 	sConfig.Channel = ADC_CHANNEL_9;
-	sConfig.Rank = 2;
-	HAL_ADC_ConfigChannel(&hadc, &sConfig);
-
-	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-	*/
-	sConfig.Channel = ADC_CHANNEL_10;
-	sConfig.Rank = 3;
-	HAL_ADC_ConfigChannel(&hadc, &sConfig);
-
-	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-	*/
-	sConfig.Channel = ADC_CHANNEL_11;
-	sConfig.Rank = 4;
-	HAL_ADC_ConfigChannel(&hadc, &sConfig);
-
-	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-	*/
-	sConfig.Channel = ADC_CHANNEL_12;
-	sConfig.Rank = 5;
-	HAL_ADC_ConfigChannel(&hadc, &sConfig);
-
-	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-	*/
-	sConfig.Channel = ADC_CHANNEL_13;
 	sConfig.Rank = 6;
 	HAL_ADC_ConfigChannel(&hadc, &sConfig);
 
 	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
 	*/
+	sConfig.Channel = ADC_CHANNEL_12;
+	sConfig.Rank = 1;
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
+	sConfig.Channel = ADC_CHANNEL_13;
+	sConfig.Rank = 2;
+	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+	*/
 	sConfig.Channel = ADC_CHANNEL_14;
-	sConfig.Rank = 7;
+	sConfig.Rank = 3;
 	HAL_ADC_ConfigChannel(&hadc, &sConfig);
 
 	/**Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
 	*/
 	sConfig.Channel = ADC_CHANNEL_15;
-	sConfig.Rank = 8;
+	sConfig.Rank = 4;
 	HAL_ADC_ConfigChannel(&hadc, &sConfig);
+
+	HAL_ADC_Start_DMA(&hadc, this->ADCBuffer, NUMBER_OF_ADC_CHANNEL);
 }
 
-void ADCInstance::Enable(unsigned int pin)
+void ADCInstance::Enable(uint8_t pin)
 {
-	  GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitTypeDef GPIO_InitStruct;
 
-	  if (hadc.Instance == ADC1)
-	  {
-	    /* Peripheral clock enable */
-	    __ADC1_CLK_ENABLE();
+	/* Peripheral clock enable */
+	__ADC1_CLK_ENABLE();
 
-	    GPIO_InitStruct.Pin = GPIOPinList[pin];
-	    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-	    GPIO_InitStruct.Pull = GPIO_NOPULL;
-	    HAL_GPIO_Init(GPIOPortList[pin], &GPIO_InitStruct);
-
-	  }
-
+	GPIO_InitStruct.Pin = GPIOPinList[pin];
+	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOPortList[pin], &GPIO_InitStruct);
 }
 
-void ADCInstance::Disable(unsigned int pin)
+void ADCInstance::Disable(uint8_t pin)
 {
-	  if (hadc.Instance == ADC1)
-	  {
-	    /* Peripheral clock disable */
-	    __ADC1_CLK_DISABLE();
+	/* Peripheral clock disable */
+	__ADC1_CLK_DISABLE();
 
-	    HAL_GPIO_DeInit(GPIOPortList[pin], GPIOPinList[pin]);
-	  }
+	HAL_GPIO_DeInit(GPIOPortList[pin], GPIOPinList[pin]);
 }
 
-unsigned int ADCInstance::Read(unsigned int pin)
+uint32_t ADCInstance::Read(uint8_t pin)
 {
-	return HAL_ADC_GetValue(&hadc);
+	return this->ADCBuffer[pin];
 }
 
 

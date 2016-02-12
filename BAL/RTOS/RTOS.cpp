@@ -68,40 +68,50 @@ void StartDefaultTask(void const * argument)
 
 void StartCommunicationTask(void const * argument)
 {
-  /* init code for FATFS */
-  char LoopString1[15] = "I'm Krakoski!";
-  char LoopString2[15] = "Hey! Woman ;)";
-  char KrakoskiAnswer[8] = "Hello!\n";
-  char Question[10];
-  char *CurrentString = LoopString2;
-  /* USER CODE BEGIN StartDefaultTask */
-  /* Infinite loop */
-  for(;;)
-  {
-	if (USBObj.Available() > 5)
+	/* init code for FATFS */
+	char LoopString1[15] = "I'm Krakoski!";
+	char LoopString2[15] = "Hey! Woman ;)";
+	char KrakoskiAnswer[8] = "Hello!\n";
+	char Question[10];
+	uint8_t ADCChannel = 0;
+
+	ADCObj.Enable(A1);
+	ADCObj.Enable(A2);
+	ADCObj.Enable(A3);
+	ADCObj.Enable(A4);
+	ADCObj.Enable(A5);
+	ADCObj.Enable(A6);
+
+	/* USER CODE BEGIN StartDefaultTask */
+	USBObj.Println(LoopString2);
+	USBObj.Println(LoopString1);
+
+	/* Infinite loop */
+	for(;;)
 	{
-		USBObj.Read(Question, USBObj.Available());
-		if (strcmp(Question, "Hello!\n") != 0)
+		if (USBObj.Available() > 5)
 		{
-			USBObj.Write(KrakoskiAnswer, 8);
-			memset(Question, 0, 10);
-		}
-	}
-	else
-	{
-		if (USBObj.Println(CurrentString) != 0)
-		{
-			if(CurrentString == LoopString2)
+			USBObj.Read(Question, USBObj.Available());
+			if (strcmp(Question, "Hello!\n") != 0)
 			{
-				CurrentString = LoopString1;
-			}
-			else
-			{
-				CurrentString = LoopString2;
+				USBObj.Write(KrakoskiAnswer, 8);
+				memset(Question, 0, 10);
 			}
 		}
+
+		sprintf(LoopString2, "ADC channel %d: ", ADCChannel);
+
+		USBObj.Print(LoopString2);
+		USBObj.Println(ADCObj.Read(ADCChannel));
+
+		ADCChannel++;
+		if(ADCChannel == NUMBER_OF_ADC_CHANNEL)
+		{
+			ADCChannel = 0;
+			USBObj.Println(LoopString1);
+		}
+
+		osDelay(1000);
 	}
-    osDelay(1000);
-  }
-  /* USER CODE END StartDefaultTask */
+	/* USER CODE END StartDefaultTask */
 }

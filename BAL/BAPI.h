@@ -13,6 +13,7 @@
 #include "RTOS/RTOS.h"
 #include "LEDS/LEDS.h"
 #include "USB/USB.h"
+#include "ADC/ADC.h"
 
 /* Exported define ------------------------------------------------------------*/
 #define NUMBER_OF_LEDS					4
@@ -35,29 +36,29 @@
 /********************************************************/
 #define NUMBER_OF_AN_INPUTS				6
 
-#define A1								0
-#define AN1_PIN							GPIO_PIN_0
-#define AN1_PORT						GPIOB
+#define A1								2
+#define AN1_PIN							GPIO_PIN_2
+#define AN1_PORT						GPIOC
 
-#define A2								1
-#define AN2_PIN							GPIO_PIN_1
-#define AN2_PORT						GPIOB
+#define A2								3
+#define AN2_PIN							GPIO_PIN_3
+#define AN2_PORT						GPIOC
 
-#define A3								2
-#define AN3_PIN							GPIO_PIN_2
+#define A3								4
+#define AN3_PIN							GPIO_PIN_4
 #define AN3_PORT						GPIOC
 
-#define A4								3
-#define AN4_PIN							GPIO_PIN_3
+#define A4								5
+#define AN4_PIN							GPIO_PIN_5
 #define AN4_PORT						GPIOC
 
-#define A5								4
-#define AN5_PIN							GPIO_PIN_4
-#define AN5_PORT						GPIOC
+#define A5								0
+#define AN5_PIN							GPIO_PIN_0
+#define AN5_PORT						GPIOB
 
-#define A6								5
-#define AN6_PIN							GPIO_PIN_5
-#define AN6_PORT						GPIOC
+#define A6								1
+#define AN6_PIN							GPIO_PIN_1
+#define AN6_PORT						GPIOB
 
 /* Exported typedef ------------------------------------------------------------*/
 
