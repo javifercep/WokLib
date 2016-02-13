@@ -30,7 +30,7 @@ uSDInstance::uSDInstance(void)
 	  hsd.Init.ClockPowerSave = SDIO_CLOCK_POWER_SAVE_DISABLE;
 	  hsd.Init.BusWide = SDIO_BUS_WIDE_1B;
 	  hsd.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
-	  hsd.Init.ClockDiv = 4;
+	  hsd.Init.ClockDiv = 16;
 }
 
 uSDInstance::~uSDInstance(void)

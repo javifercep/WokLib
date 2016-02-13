@@ -49,6 +49,7 @@ void BoardInstance::Initialization(void)
  	__GPIOD_CLK_ENABLE();
 
  	ADCObj.Initialization();
+ 	uSD.Initialization();
  	USBObj.Initialization();
 
 }

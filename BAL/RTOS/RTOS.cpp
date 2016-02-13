@@ -77,14 +77,10 @@ void StartDefaultTask(void const * argument)
 void StartCommunicationTask(void const * argument)
 {
 	char LoopString2[15] = "Hey! Woman ;)";
-	char KrakoskiAnswer[8] = "Hello!\n";
-	char Question[10];
+	char Command;
+	uint8_t dataLogEnabled = 0;
 	uint8_t ADCChannel = 0;
 	uint32_t ADCValue = 0;
-
-	uSD.Initialization();
-	uSD.MountSD();
-	uSD.CreateFile("ADCData.csv");
 
 	ADCObj.Enable(A1);
 	ADCObj.Enable(A2);
@@ -93,39 +89,50 @@ void StartCommunicationTask(void const * argument)
 	ADCObj.Enable(A5);
 	ADCObj.Enable(A6);
 
-	/* USER CODE BEGIN StartDefaultTask */
-	USBObj.Println("Hey Woman!");
-	USBObj.Println("I'm Krakoski");
-	uSD.Println("Hey Woman!");
-	uSD.Println("I'm Krakoski");
-
 	/* Infinite loop */
 	for(;;)
 	{
-		if (USBObj.Available() > 5)
+		if (USBObj.Available() > 0)
 		{
-			USBObj.Read(Question, USBObj.Available());
-			if (strcmp(Question, "Hello!\n") != 0)
+			USBObj.Read(&Command, 1);
+			switch(Command)
 			{
-				USBObj.Write(KrakoskiAnswer, 8);
-				memset(Question, 0, 10);
+				case 'm':
+					uSD.MountSD();
+					break;
+				case 's':
+					dataLogEnabled = 1;
+					uSD.CreateFile("ADCData.csv");
+					break;
+				case 'c':
+					dataLogEnabled = 0;
+					uSD.CloseFile();
+					break;
+				default:
+					break;
 			}
+			Command = 0;
 		}
 
-		USBObj.Println("I'm Krakoski");
-
-		for (ADCChannel = 0; ADCChannel < NUMBER_OF_ADC_CHANNEL; ADCChannel++)
+		if (dataLogEnabled)
 		{
-			sprintf(LoopString2, "ADC channel %d: ", ADCChannel);
-			ADCValue = ADCObj.Read(ADCChannel);
-			USBObj.Print(LoopString2);
-			USBObj.Println(ADCValue);
-			uSD.Print(ADCValue);
-			uSD.Print(";");
-		}
-		uSD.Println("\n New Line;");
+			USBObj.Println("I'm Krakoski");
 
-		osDelay(900);
+			for (ADCChannel = 0; ADCChannel < NUMBER_OF_ADC_CHANNEL; ADCChannel++)
+			{
+				sprintf(LoopString2, "ADC channel %d: ", ADCChannel);
+				ADCValue = ADCObj.Read(ADCChannel);
+				USBObj.Print(LoopString2);
+				USBObj.Println(ADCValue);
+				uSD.Print(ADCValue);
+				uSD.Print(";");
+			}
+			uSD.Print("\n");
+
+			osDelay(700);
+		}
+
+		osDelay(50);
 	}
 	/* USER CODE END StartDefaultTask */
 }
