@@ -14,6 +14,7 @@
 #include "LEDS/LEDS.h"
 #include "USB/USB.h"
 #include "ADC/ADC.h"
+#include "uSD/uSD.h"
 
 /* Exported define ------------------------------------------------------------*/
 /* LEDS ***********/
@@ -160,6 +161,10 @@
 #define PINA6							23
 #define PINA6_PIN						GPIO_PIN_1
 #define PINA6_PORT						GPIOB
+
+/* SD ****************************/
+#define SD_CD_PIN						GPIO_PIN_1
+#define SD_CD_PORT						GPIOC
 
 /* Exported typedef ------------------------------------------------------------*/
 

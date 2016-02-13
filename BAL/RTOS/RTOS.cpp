@@ -76,12 +76,15 @@ void StartDefaultTask(void const * argument)
 
 void StartCommunicationTask(void const * argument)
 {
-	/* init code for FATFS */
-	char LoopString1[15] = "I'm Krakoski!";
 	char LoopString2[15] = "Hey! Woman ;)";
 	char KrakoskiAnswer[8] = "Hello!\n";
 	char Question[10];
 	uint8_t ADCChannel = 0;
+	uint32_t ADCValue = 0;
+
+	uSD.Initialization();
+	uSD.MountSD();
+	uSD.CreateFile("ADCData.csv");
 
 	ADCObj.Enable(A1);
 	ADCObj.Enable(A2);
@@ -91,8 +94,10 @@ void StartCommunicationTask(void const * argument)
 	ADCObj.Enable(A6);
 
 	/* USER CODE BEGIN StartDefaultTask */
-	USBObj.Println(LoopString2);
-	USBObj.Println(LoopString1);
+	USBObj.Println("Hey Woman!");
+	USBObj.Println("I'm Krakoski");
+	uSD.Println("Hey Woman!");
+	uSD.Println("I'm Krakoski");
 
 	/* Infinite loop */
 	for(;;)
@@ -107,15 +112,18 @@ void StartCommunicationTask(void const * argument)
 			}
 		}
 
-		USBObj.Println(LoopString1);
+		USBObj.Println("I'm Krakoski");
 
 		for (ADCChannel = 0; ADCChannel < NUMBER_OF_ADC_CHANNEL; ADCChannel++)
 		{
 			sprintf(LoopString2, "ADC channel %d: ", ADCChannel);
-
+			ADCValue = ADCObj.Read(ADCChannel);
 			USBObj.Print(LoopString2);
-			USBObj.Println(ADCObj.Read(ADCChannel));
+			USBObj.Println(ADCValue);
+			uSD.Print(ADCValue);
+			uSD.Print(";");
 		}
+		uSD.Println("\n New Line;");
 
 		osDelay(900);
 	}
