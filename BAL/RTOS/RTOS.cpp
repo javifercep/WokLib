@@ -56,10 +56,18 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	GPIO.Toggle(LED1);
-	GPIO.Toggle(LED2);
+	GPIO.Toggle(PIN3);
+	GPIO.Toggle(PIN5);
 	LEDS.Toggle(LED3);
 	LEDS.Toggle(LED4);
+
+	GPIO.Toggle(PIN0);
+	GPIO.Toggle(PIN1);
+	GPIO.Toggle(PIN2);
+	GPIO.Toggle(PIN4);
+	GPIO.Toggle(PIN7);
+	GPIO.Toggle(PIN8);
+
     osDelay(500);
   }
   /* USER CODE END StartDefaultTask */
@@ -99,19 +107,17 @@ void StartCommunicationTask(void const * argument)
 			}
 		}
 
-		sprintf(LoopString2, "ADC channel %d: ", ADCChannel);
+		USBObj.Println(LoopString1);
 
-		USBObj.Print(LoopString2);
-		USBObj.Println(ADCObj.Read(ADCChannel));
-
-		ADCChannel++;
-		if(ADCChannel == NUMBER_OF_ADC_CHANNEL)
+		for (ADCChannel = 0; ADCChannel < NUMBER_OF_ADC_CHANNEL; ADCChannel++)
 		{
-			ADCChannel = 0;
-			USBObj.Println(LoopString1);
+			sprintf(LoopString2, "ADC channel %d: ", ADCChannel);
+
+			USBObj.Print(LoopString2);
+			USBObj.Println(ADCObj.Read(ADCChannel));
 		}
 
-		osDelay(1000);
+		osDelay(900);
 	}
 	/* USER CODE END StartDefaultTask */
 }

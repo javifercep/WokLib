@@ -15,8 +15,8 @@
 LEDSInstance LEDS;
 
 /* private variables	  --------------------------------------------------------*/
-static GPIO_TypeDef* GPIOPortList[NUMBER_OF_LEDS] = {LED1_GPIO_PORT, LED2_GPIO_PORT,
-													 LED3_GPIO_PORT, LED4_GPIO_PORT};
+static GPIO_TypeDef* GPIOPortList[NUMBER_OF_LEDS] = {LED1_PORT, LED2_PORT,
+													 LED3_PORT, LED4_PORT};
 static const uint16_t GPIOPinList[NUMBER_OF_LEDS] = {LED1_PIN, LED2_PIN, LED3_PIN,
 													 LED4_PIN};
 /* private class functions -------------------------------------------------------*/

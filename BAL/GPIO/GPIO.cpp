@@ -15,10 +15,22 @@
 GPIOInstance GPIO;
 
 /* private variables	  --------------------------------------------------------*/
-static GPIO_TypeDef* GPIOPortList[NUMBER_OF_LEDS] = {LED1_GPIO_PORT, LED2_GPIO_PORT,
-													 LED3_GPIO_PORT, LED4_GPIO_PORT};
-static const uint16_t GPIOPinList[NUMBER_OF_LEDS] = {LED1_PIN, LED2_PIN, LED3_PIN,
-													 LED4_PIN};
+static GPIO_TypeDef* GPIOPortList[NUMBER_OF_GPIO] = {PIN0_PORT,   PIN1_PORT,    PIN2_PORT,
+													 PIN3_PORT,   PIN4_PORT,    PIN5_PORT,
+													 PIN6_PORT,   PIN7_PORT,    PIN8_PORT,
+													 PIN9_PORT,   PIN10_PORT,   PIN11_PORT,
+													 PIN12_PORT,  PIN13_PORT,   PINSDA_PORT,
+													 PINSCL_PORT, PINWKUP_PORT, PINDAC_PORT,
+													 PINA1_PORT,  PINA2_PORT,   PINA3_PORT,
+													 PINA4_PORT,  PINA5_PORT,   PINA6_PORT};
+static const uint16_t GPIOPinList[NUMBER_OF_GPIO] = {PIN0_PIN,   PIN1_PIN,    PIN2_PIN,
+		 	 	 	 	 	 	 	 	 	 	 	 PIN3_PIN,   PIN4_PIN,    PIN5_PIN,
+		 	 	 	 	 	 	 	 	 	 	 	 PIN6_PIN,   PIN7_PIN,    PIN8_PIN,
+		 	 	 	 	 	 	 	 	 	 	 	 PIN9_PIN,   PIN10_PIN,   PIN11_PIN,
+		 	 	 	 	 	 	 	 	 	 	 	 PIN12_PIN,  PIN13_PIN,   PINSDA_PIN,
+		 	 	 	 	 	 	 	 	 	 	 	 PINSCL_PIN, PINWKUP_PIN, PINDAC_PIN,
+		 	 	 	 	 	 	 	 	 	 	 	 PINA1_PIN,  PINA2_PIN,   PINA3_PIN,
+		 	 	 	 	 	 	 	 	 	 	 	 PINA4_PIN,  PINA5_PIN,   PINA6_PIN};
 /* private class functions -------------------------------------------------------*/
 
 GPIOInstance::GPIOInstance(void)
