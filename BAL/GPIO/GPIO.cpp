@@ -22,7 +22,8 @@ static GPIO_TypeDef* GPIOPortList[NUMBER_OF_GPIO] = {PIN0_PORT,   PIN1_PORT,    
 													 PIN12_PORT,  PIN13_PORT,   PINSDA_PORT,
 													 PINSCL_PORT, PINWKUP_PORT, PINDAC_PORT,
 													 PINA1_PORT,  PINA2_PORT,   PINA3_PORT,
-													 PINA4_PORT,  PINA5_PORT,   PINA6_PORT};
+													 PINA4_PORT,  PINA5_PORT,   PINA6_PORT,
+													 PINRST_ESP_PORT};
 static const uint16_t GPIOPinList[NUMBER_OF_GPIO] = {PIN0_PIN,   PIN1_PIN,    PIN2_PIN,
 		 	 	 	 	 	 	 	 	 	 	 	 PIN3_PIN,   PIN4_PIN,    PIN5_PIN,
 		 	 	 	 	 	 	 	 	 	 	 	 PIN6_PIN,   PIN7_PIN,    PIN8_PIN,
@@ -30,7 +31,8 @@ static const uint16_t GPIOPinList[NUMBER_OF_GPIO] = {PIN0_PIN,   PIN1_PIN,    PI
 		 	 	 	 	 	 	 	 	 	 	 	 PIN12_PIN,  PIN13_PIN,   PINSDA_PIN,
 		 	 	 	 	 	 	 	 	 	 	 	 PINSCL_PIN, PINWKUP_PIN, PINDAC_PIN,
 		 	 	 	 	 	 	 	 	 	 	 	 PINA1_PIN,  PINA2_PIN,   PINA3_PIN,
-		 	 	 	 	 	 	 	 	 	 	 	 PINA4_PIN,  PINA5_PIN,   PINA6_PIN};
+		 	 	 	 	 	 	 	 	 	 	 	 PINA4_PIN,  PINA5_PIN,   PINA6_PIN,
+		 	 	 	 	 	 	 	 	 	 	 	 PINRST_ESP_PIN};
 /* private class functions -------------------------------------------------------*/
 
 GPIOInstance::GPIOInstance(void)

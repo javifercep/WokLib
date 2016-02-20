@@ -14,6 +14,7 @@
 #include "LEDS/LEDS.h"
 #include "USB/USB.h"
 #include "ADC/ADC.h"
+#include "USART/USART.h"
 
 /* Exported define ------------------------------------------------------------*/
 /* LEDS ***********/
@@ -63,7 +64,7 @@
 #define AN6_PORT						GPIOB
 
 /* GPIO *******************/
-#define NUMBER_OF_GPIO					24
+#define NUMBER_OF_GPIO					25
 
 #define PIN0							0
 #define PIN0_PIN						GPIO_PIN_2
@@ -160,6 +161,11 @@
 #define PINA6							23
 #define PINA6_PIN						GPIO_PIN_1
 #define PINA6_PORT						GPIOB
+
+#define PINRST_ESP						24
+#define PINRST_ESP_PIN					GPIO_PIN_15
+#define PINRST_ESP_PORT					GPIOC
+
 
 /* Exported typedef ------------------------------------------------------------*/
 

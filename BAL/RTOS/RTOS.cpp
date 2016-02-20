@@ -40,7 +40,7 @@ void RTOSInstance::Initialization(void)
    osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
    defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-   osThreadDef(CommunicationTask, StartCommunicationTask, osPriorityAboveNormal, 0, 512);
+   osThreadDef(CommunicationTask, StartCommunicationTask, osPriorityAboveNormal, 0, 1024);
    CommunicationTaskHandle = osThreadCreate(osThread(CommunicationTask), NULL);
 
 
@@ -61,13 +61,6 @@ void StartDefaultTask(void const * argument)
 	LEDS.Toggle(LED3);
 	LEDS.Toggle(LED4);
 
-	GPIO.Toggle(PIN0);
-	GPIO.Toggle(PIN1);
-	GPIO.Toggle(PIN2);
-	GPIO.Toggle(PIN4);
-	GPIO.Toggle(PIN7);
-	GPIO.Toggle(PIN8);
-
     osDelay(500);
   }
   /* USER CODE END StartDefaultTask */
@@ -76,48 +69,35 @@ void StartDefaultTask(void const * argument)
 
 void StartCommunicationTask(void const * argument)
 {
-	/* init code for FATFS */
-	char LoopString1[15] = "I'm Krakoski!";
-	char LoopString2[15] = "Hey! Woman ;)";
-	char KrakoskiAnswer[8] = "Hello!\n";
-	char Question[10];
-	uint8_t ADCChannel = 0;
+	char Question1[64];
+	char Question2[255];
+	unsigned int size;
 
-	ADCObj.Enable(A1);
-	ADCObj.Enable(A2);
-	ADCObj.Enable(A3);
-	ADCObj.Enable(A4);
-	ADCObj.Enable(A5);
-	ADCObj.Enable(A6);
-
-	/* USER CODE BEGIN StartDefaultTask */
-	USBObj.Println(LoopString2);
-	USBObj.Println(LoopString1);
+	/* Wait for the ESP initialization before reading data
+	 * from UART
+	 */
+	osDelay(1000);
+	USART.Initialization();
 
 	/* Infinite loop */
 	for(;;)
 	{
-		if (USBObj.Available() > 5)
+		/* USB to UART converter */
+		size = USBObj.Available();
+		if (size > 0)
 		{
-			USBObj.Read(Question, USBObj.Available());
-			if (strcmp(Question, "Hello!\n") != 0)
-			{
-				USBObj.Write(KrakoskiAnswer, 8);
-				memset(Question, 0, 10);
-			}
+			USBObj.Read(Question1,size);
+			USART.Write(Question1,size);
 		}
 
-		USBObj.Println(LoopString1);
-
-		for (ADCChannel = 0; ADCChannel < NUMBER_OF_ADC_CHANNEL; ADCChannel++)
+		size = USART.Available();
+		if (size > 0)
 		{
-			sprintf(LoopString2, "ADC channel %d: ", ADCChannel);
-
-			USBObj.Print(LoopString2);
-			USBObj.Println(ADCObj.Read(ADCChannel));
+			USART.Read(Question2,size);
+			USBObj.Write(Question2,size);
 		}
 
-		osDelay(900);
+		osDelay(100);
 	}
 	/* USER CODE END StartDefaultTask */
 }

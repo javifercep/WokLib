@@ -6,8 +6,6 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "BAPI.h"
-#include "GPIO/GPIO.h"
-#include "ADC/ADC.h"
 #include "stm32f2xx_hal.h"
 
 /* Private variables ---------------------------------------------------------*/
