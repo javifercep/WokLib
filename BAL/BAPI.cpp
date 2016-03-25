@@ -11,14 +11,9 @@
 /* Private variables ---------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 /* Private function prototypes -----------------------------------------------*/
-
 void SystemClock_Config(void);
+
 /* Private function prototypes -----------------------------------------------*/
-/**
-  * @brief  Initializes Tibuboard LEDs and Buttons.
-  * @param  None
-  * @retval None
-  */
 BoardInstance::BoardInstance(void)
 {
 
@@ -46,12 +41,12 @@ void BoardInstance::Initialization(void)
  	__GPIOB_CLK_ENABLE();
  	__GPIOD_CLK_ENABLE();
 
+ 	USARTObj2.Initialization(USART_MODULE_2, DFLT_USART_BAUDRATE);
  	ADCObj.Initialization();
  	USBObj.Initialization();
 
 }
-/** System Clock Configuration
-*/
+
 /** System Clock Configuration
 */
 void SystemClock_Config(void)

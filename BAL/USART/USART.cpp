@@ -5,29 +5,50 @@
   *******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
+#include "Krakoski.h"
 #include "USART/USART.h"
 #include "FreeRTOS.h"
-#include "stm32f2xx_hal.h"
+#include "stm32f2xx.h"
 
 #include <stdio.h>
 #include <string.h>
 
-/* Private variables ---------------------------------------------------------*/
-UART_HandleTypeDef huart1;
-UART_HandleTypeDef huart2;
-DMA_HandleTypeDef hdma_usart1_tx;
-DMA_HandleTypeDef hdma_usart2_tx;
+/* Exported variables --------------------------------------------------------*/
+UsartInstance USARTObj1;
 
-UsartInstance USART;
+#if NUMBER_OF_USART > 1
+UsartInstance USARTObj2;
+#endif
+
+/* Private variables ---------------------------------------------------------*/
+static UART_HandleTypeDef *huart1 = NULL;
+static DMA_HandleTypeDef *hdma_usart1_tx = NULL;
+
+#if NUMBER_OF_USART > 1
+static UART_HandleTypeDef *huart2 = NULL;
+static DMA_HandleTypeDef *hdma_usart2_tx = NULL;
+#endif
+
+
 
 /* Private function prototypes -----------------------------------------------*/
+#ifdef __cplusplus
+ extern "C" {
+#endif
+/* STM32Cube HAL function prototypes */
 void USART1_IRQHandler(void);
+void DMA2_Stream7_IRQHandler(void);
 
-/**
-  * @brief  Initializes Tibuboard LEDs and Buttons.
-  * @param  None
-  * @retval None
-  */
+#if NUMBER_OF_USART > 1
+void USART2_IRQHandler(void);
+void DMA1_Stream6_IRQHandler(void);
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+/* USART Class description */
 UsartInstance::UsartInstance(void)
 {
 
@@ -38,27 +59,81 @@ UsartInstance::~UsartInstance(void)
 
 }
 
-void UsartInstance::Initialization(void)
+int UsartInstance::Initialization(unsigned char module, unsigned int baudrate)
 {
+	int ret = 0;
 
-	this->USARTRxQueue.Alloc(2047);
+	this->USARTRxQueue.Alloc(USART_BUFFER_SIZE);
 
-	__DMA2_CLK_ENABLE();
+	switch (module)
+	{
+		case USART_MODULE_1:
+			__DMA2_CLK_ENABLE();
 
-	HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 5, 0);
-	HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
+			HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 2, 0);
+			HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
 
-	huart1.Instance = USART1;
-	huart1.Init.BaudRate = 115200;
-	huart1.Init.WordLength = UART_WORDLENGTH_8B;
-	huart1.Init.StopBits = UART_STOPBITS_1;
-	huart1.Init.Parity = UART_PARITY_NONE;
-	huart1.Init.Mode = UART_MODE_TX_RX;
-	huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-	huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-	HAL_UART_Init(&huart1);
+			huart1 = &(this->huart);
+			hdma_usart1_tx = &(this->hdma_usart_tx);
 
-	HAL_UART_Receive_IT(&huart1, (uint8_t *)&(this->CurrentChar), 1);
+			this->huart.Instance = USART1;
+
+		    this->hdma_usart_tx.Instance = DMA2_Stream7;
+		    this->hdma_usart_tx.Init.Channel = DMA_CHANNEL_4;
+
+			break;
+#if NUMBER_OF_USART > 1
+		case USART_MODULE_2:
+			__DMA1_CLK_ENABLE();
+
+			HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 2, 0);
+			HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+
+			huart2 = &(this->huart);
+			hdma_usart2_tx = &(this->hdma_usart_tx);
+
+			this->hdma_usart_tx.Instance = DMA1_Stream6;
+			this->hdma_usart_tx.Init.Channel = DMA_CHANNEL_4;
+
+			this->huart.Instance = USART2;
+			break;
+#endif
+		default:
+			ret = -1;
+			break;
+	}
+
+	if (ret == 0)
+	{
+		this->huart.Init.BaudRate = baudrate;
+		this->huart.Init.WordLength = UART_WORDLENGTH_8B;
+		this->huart.Init.StopBits = UART_STOPBITS_1;
+		this->huart.Init.Parity = UART_PARITY_NONE;
+		this->huart.Init.Mode = UART_MODE_TX_RX;
+		this->huart.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+		this->huart.Init.OverSampling = UART_OVERSAMPLING_16;
+		HAL_UART_Init(&(this->huart));
+
+		this->hdma_usart_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
+		this->hdma_usart_tx.Init.PeriphInc = DMA_PINC_DISABLE;
+		this->hdma_usart_tx.Init.MemInc = DMA_MINC_ENABLE;
+		this->hdma_usart_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+		this->hdma_usart_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+		this->hdma_usart_tx.Init.Mode = DMA_NORMAL;
+		this->hdma_usart_tx.Init.Priority = DMA_PRIORITY_MEDIUM;
+		this->hdma_usart_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+	    HAL_DMA_Init(&(this->hdma_usart_tx));
+
+	    __HAL_LINKDMA(&huart,hdmatx,hdma_usart_tx);
+
+		HAL_UART_Receive_IT(&(this->huart), (uint8_t *)&(this->CurrentChar), 1);
+	}
+
+	return ret;
+}
+
+void Deinitialization()
+{
 
 }
 
@@ -76,7 +151,7 @@ unsigned int UsartInstance::Write(char *source, unsigned int size)
 {
 	uint8_t *pTemp = (uint8_t *)source;
 
-	HAL_UART_Transmit_DMA(&huart1, pTemp, size);
+	HAL_UART_Transmit_DMA(&(this->huart), pTemp, size);
 
 	return size;
 }
@@ -182,12 +257,56 @@ unsigned int UsartInstance::Println(int source)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	USART.USARTRxQueue.Write(USART.CurrentChar);
-	HAL_UART_Receive_IT(huart, (uint8_t *)&(USART.CurrentChar), 1);
+	if (huart->Instance == USART1)
+	{
+		USARTObj1.USARTRxQueue.Write(USARTObj1.CurrentChar);
+		HAL_UART_Receive_IT(huart, (uint8_t *)&(USARTObj1.CurrentChar), 1);
+	}
+
+	if (huart->Instance == USART2)
+	{
+		USARTObj2.USARTRxQueue.Write(USARTObj2.CurrentChar);
+		HAL_UART_Receive_IT(huart, (uint8_t *)&(USARTObj2.CurrentChar), 1);
+	}
+
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *huart)
 {
 	__HAL_UART_CLEAR_PEFLAG(huart);
+}
+
+
+/* STM32Cube HAL function **********************************************/
+/**
+* @brief This function handles USART1 global interrupt.
+*/
+void USART1_IRQHandler(void)
+{
+  HAL_UART_IRQHandler(huart1);
+}
+
+/**
+* @brief This function handles DMA2 Stream7 global interrupt.
+*/
+void DMA2_Stream7_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(hdma_usart1_tx);
+}
+
+/**
+* @brief This function handles USART2 global interrupt.
+*/
+void USART2_IRQHandler(void)
+{
+  HAL_UART_IRQHandler(huart2);
+}
+
+/**
+* @brief This function handles DMA1 stream6 global interrupt.
+*/
+void DMA1_Stream6_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(hdma_usart2_tx);
 }
 

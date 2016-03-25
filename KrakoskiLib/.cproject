@@ -7,10 +7,10 @@
 					<externalSetting/>
 				</externalSettings>
 				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
@@ -35,6 +35,7 @@
 									<listOptionValue builtIn="false" value="USE_HAL_DRIVER"/>
 									<listOptionValue builtIn="false" value="&quot;__weak= __attribute__((weak))&quot;"/>
 									<listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))"/>
+									<listOptionValue builtIn="false" value="KRAKOSKI_BOARD"/>
 								</option>
 								<option id="com.atollic.truestudio.as.general.incpath.437147774" name="Include path" superClass="com.atollic.truestudio.as.general.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../KAL"/>
@@ -50,6 +51,7 @@
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Device/ST/STM32F2xx/Include"/>
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../..\BAL\BoardList&quot;"/>
 								</option>
 								<inputType id="com.atollic.truestudio.as.input.45647628" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
@@ -59,6 +61,7 @@
 									<listOptionValue builtIn="false" value="USE_HAL_DRIVER"/>
 									<listOptionValue builtIn="false" value="&quot;__weak= __attribute__((weak))&quot;"/>
 									<listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))"/>
+									<listOptionValue builtIn="false" value="KRAKOSKI_BOARD"/>
 								</option>
 								<option id="com.atollic.truestudio.gcc.directories.select.1630654300" name="Include path" superClass="com.atollic.truestudio.gcc.directories.select" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../KAL"/>
@@ -74,6 +77,7 @@
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Device/ST/STM32F2xx/Include"/>
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../..\BAL\BoardList&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.1004092309" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.322522789" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F205RB" valueType="enumerated"/>
@@ -100,6 +104,7 @@
 									<listOptionValue builtIn="false" value="USE_HAL_DRIVER"/>
 									<listOptionValue builtIn="false" value="&quot;__weak= __attribute__((weak))&quot;"/>
 									<listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))"/>
+									<listOptionValue builtIn="false" value="KRAKOSKI_BOARD"/>
 								</option>
 								<option id="com.atollic.truestudio.gpp.directories.select.918206374" name="Include path" superClass="com.atollic.truestudio.gpp.directories.select" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../KAL"/>
@@ -115,6 +120,7 @@
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Drivers/CMSIS/Device/ST/STM32F2xx/Include"/>
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../..\BAL\BoardList&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.2045765054" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.1844582556" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F205RB" valueType="enumerated"/>
@@ -154,10 +160,10 @@
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="com.atollic.truestudio.configuration.release.1381298699" moduleId="org.eclipse.cdt.core.settings" name="Release">
 				<externalSettings/>
 				<extensions>
+					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
@@ -178,6 +184,7 @@
 									<listOptionValue builtIn="false" value="&quot;__weak= __attribute__((weak))&quot;"/>
 									<listOptionValue builtIn="false" value="__packed=__attribute__((__packed__))"/>
 									<listOptionValue builtIn="false" value="__cplusplus"/>
+									<listOptionValue builtIn="false" value="KRAKOSKI_BOARD"/>
 								</option>
 								<option id="com.atollic.truestudio.as.general.incpath.2144712707" name="Include path" superClass="com.atollic.truestudio.as.general.incpath" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../KAL"/>
@@ -194,6 +201,7 @@
 									<listOptionValue builtIn="false" value="&quot;../..\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Core\Inc&quot;"/>
 									<listOptionValue builtIn="false" value="../../PAL/STM32F205/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\JAVIS\Documents\GitHub\WokLib\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../..\BAL\BoardList&quot;"/>
 								</option>
 								<inputType id="com.atollic.truestudio.as.input.2016761525" name="Input" superClass="com.atollic.truestudio.as.input"/>
 							</tool>
@@ -206,6 +214,7 @@
 									<listOptionValue builtIn="false" value="STM32F2XX"/>
 									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
 									<listOptionValue builtIn="false" value="__cplusplus"/>
+									<listOptionValue builtIn="false" value="KRAKOSKI_BOARD"/>
 								</option>
 								<option id="com.atollic.truestudio.gcc.directories.select.384561027" name="Include path" superClass="com.atollic.truestudio.gcc.directories.select" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../KAL"/>
@@ -226,6 +235,7 @@
 									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Include"/>
 									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Device\ST\STM32F2xx\Include"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\JAVIS\Documents\GitHub\WokLib\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../..\BAL\BoardList&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.2004471746" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.2099171077" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F205RG" valueType="enumerated"/>
@@ -255,6 +265,7 @@
 									<listOptionValue builtIn="false" value="STM32F2XX"/>
 									<listOptionValue builtIn="false" value="USE_STDPERIPH_DRIVER"/>
 									<listOptionValue builtIn="false" value="__cplusplus"/>
+									<listOptionValue builtIn="false" value="KRAKOSKI_BOARD"/>
 								</option>
 								<option id="com.atollic.truestudio.gpp.directories.select.1138619782" name="Include path" superClass="com.atollic.truestudio.gpp.directories.select" valueType="includePath">
 									<listOptionValue builtIn="false" value="../../KAL"/>
@@ -275,6 +286,7 @@
 									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Include"/>
 									<listOptionValue builtIn="false" value="..\Libraries\CMSIS\Device\ST\STM32F2xx\Include"/>
 									<listOptionValue builtIn="false" value="&quot;C:\Users\JAVIS\Documents\GitHub\WokLib\PAL\STM32F205\Middlewares\ST\STM32_USB_Device_Library\Class\CDC\Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../..\BAL\BoardList&quot;"/>
 								</option>
 								<option id="com.atollic.truestudio.common_options.target.endianess.208393212" name="Endianess" superClass="com.atollic.truestudio.common_options.target.endianess"/>
 								<option id="com.atollic.truestudio.common_options.target.mcpu.1132173816" name="Microcontroller" superClass="com.atollic.truestudio.common_options.target.mcpu" value="STM32F205RG" valueType="enumerated"/>
