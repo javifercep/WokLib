@@ -7,7 +7,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "Krakoski.h"
 #include "USART/USART.h"
-#include "FreeRTOS.h"
+#include "RTOS/RTOS.h"
 #include "stm32f2xx.h"
 
 #include <stdio.h>
@@ -29,7 +29,11 @@ static UART_HandleTypeDef *huart2 = NULL;
 static DMA_HandleTypeDef *hdma_usart2_tx = NULL;
 #endif
 
+osMutexId USART1TxMutexHandle;
+osMutexId USART1RxMutexHandle;
 
+osMutexDef(USART1TxMutex);
+osMutexDef(USART1RxMutex);
 
 /* Private function prototypes -----------------------------------------------*/
 #ifdef __cplusplus
@@ -68,6 +72,9 @@ int UsartInstance::Initialization(unsigned char module, unsigned int baudrate)
 	switch (module)
 	{
 		case USART_MODULE_1:
+		    USART1TxMutexHandle = osMutexCreate(osMutex(USART1TxMutex));
+		    USART1RxMutexHandle = osMutexCreate(osMutex(USART1RxMutex));
+
 			__DMA2_CLK_ENABLE();
 
 			HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 2, 0);
@@ -151,7 +158,9 @@ unsigned int UsartInstance::Write(char *source, unsigned int size)
 {
 	uint8_t *pTemp = (uint8_t *)source;
 
+    osMutexWait(USART1TxMutexHandle, 0);
 	HAL_UART_Transmit_DMA(&(this->huart), pTemp, size);
+	osMutexRelease (USART1TxMutexHandle);
 
 	return size;
 }
@@ -161,12 +170,14 @@ unsigned int UsartInstance::Read(char *destination, unsigned int size)
 	unsigned char *pTemp = (unsigned char *)destination;
 	unsigned int result = size;
 
+	osMutexWait(USART1RxMutexHandle, 0);
 	if (result > this->USARTRxQueue.Available())
 	{
 		result = this->USARTRxQueue.Available();
 	}
 
 	this->USARTRxQueue.ReadToArray(pTemp, result);
+	osMutexWait(USART1RxMutexHandle, 0);
 
 	return result;
 }

@@ -38,6 +38,8 @@ public:
 	void Initialization(void);
 	void StartConfigMode(void);
 	void StopConfigMode(void);
+	void ConfigWrite(char *pdata, unsigned int size);
+	void ConfigRead(char *pdata, unsigned int *size);
 	unsigned int Available(void);
 	unsigned int Write(char *source, unsigned int size);
 	unsigned int Read(char *destination, unsigned int size);

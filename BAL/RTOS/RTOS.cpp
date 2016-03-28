@@ -16,13 +16,15 @@
 RTOSInstance RTOS;
 /* private variables	  --------------------------------------------------------*/
 osThreadId defaultTaskHandle;
+osTimerId BaseTimeHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 void StartDefaultTask(void const * argument);
+void BaseTimeCB(void const * argument);
 
 /* Main threads */
 osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 128);
-
+osTimerDef(BaseTime, BaseTimeCB);
 /* private class functions -------------------------------------------------------*/
 
 RTOSInstance::RTOSInstance(void)
@@ -37,6 +39,7 @@ void RTOSInstance::Initialization(void)
 {
   /* Init main and woklib threads */
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+  BaseTimeHandle = osTimerCreate(osTimer(BaseTime), osTimerPeriodic, NULL);
 
   /* Start scheduler */
   osKernelStart();
@@ -54,18 +57,27 @@ osStatus RTOSInstance::DeleteTask(osThreadId TaskID)
 
 void StartDefaultTask(void const * argument)
 {
-  /* init code for FATFS */
 
-  /* USER CODE BEGIN StartDefaultTask */
+ LEDS.Initialization(LED1);
+ LEDS.Initialization(LED2);
+ LEDS.On(LED1);
+ LEDS.Off(LED2);
+
   /* Infinite loop */
   for (;;)
   {
-    GPIO.Toggle(PIN3);
-    GPIO.Toggle(PIN5);
-    LEDS.Toggle(LED3);
-    LEDS.Toggle(LED4);
+    LEDS.Toggle(LED1);
+    LEDS.Toggle(LED2);
 
     osDelay(500);
   }
   /* USER CODE END StartDefaultTask */
+}
+
+/* BaseTimeCB function */
+void BaseTimeCB(void const * argument)
+{
+  /* USER CODE BEGIN BaseTimeCB */
+
+  /* USER CODE END BaseTimeCB */
 }
