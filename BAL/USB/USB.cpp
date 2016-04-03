@@ -27,6 +27,12 @@ extern Queue USBRxQueue;
 USBInstance USBObj;
 USBD_HandleTypeDef hUsbDeviceFS;
 
+osMutexId USBTxMutexHandle;
+osMutexId USBRxMutexHandle;
+
+osMutexDef(USBTxMutex);
+osMutexDef(USBRxMutex);
+
 /* private variables	  --------------------------------------------------------*/
 /* USB Device Core handle declaration */
 USBInstance::USBInstance(void)
@@ -42,6 +48,10 @@ USBInstance::~USBInstance(void)
 void USBInstance::Initialization(void)
 {
 	USBRxQueue.Alloc(2047);
+
+	USBTxMutexHandle = osMutexCreate(osMutex(USBTxMutex));
+	USBRxMutexHandle = osMutexCreate(osMutex(USBRxMutex));
+
 	/* Init Device Library,Add Supported Class and Start the library*/
 	USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
 
@@ -68,8 +78,10 @@ unsigned int USBInstance::Write(char *source, unsigned int size)
 	char *pTemp = source;
 	unsigned int result = size;
 
+	osMutexWait(USBTxMutexHandle, 0);
 	/* wait until the last message has been sent and set the new buffer */
 	while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+	osMutexRelease (USBTxMutexHandle);
 
 	return result;
 }
@@ -79,12 +91,16 @@ unsigned int USBInstance::Read(char *destination, unsigned int size)
 	unsigned char *pTemp = (unsigned char *)destination;
 	unsigned int result = size;
 
+
+    osMutexWait(USBRxMutexHandle, 0);
 	if (result > USBRxQueue.Available())
 	{
 		result = USBRxQueue.Available();
 	}
 
 	USBRxQueue.ReadToArray(pTemp, result);
+
+	osMutexRelease (USBRxMutexHandle);
 
 	return result;
 }
@@ -101,9 +117,7 @@ unsigned int USBInstance::Print(char* source)
 	{
 		strcpy(pTemp, source);
 
-		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
-
-		result = size;
+		result = this->Write(pTemp, size);
 
 		vPortFree(pTemp);
 	}
@@ -121,10 +135,7 @@ unsigned int USBInstance::Print(int source)
 
 	if( size > 0)
 	{
-		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
-
-		result = size;
-
+		result = this->Write(pTemp, size);
 	}
 
 	return result;
@@ -145,10 +156,7 @@ unsigned int USBInstance::Println(char* source)
 
 		size = strlen(pTemp);
 
-		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
-
-		result = size;
-
+		result = this->Write(pTemp, size);
 
 		vPortFree(pTemp);
 	}
@@ -166,9 +174,7 @@ unsigned int USBInstance::Println(int source)
 
 	if(size > 0)
 	{
-		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
-
-		result = size;
+	  result = this->Write(pTemp, size);
 	}
 
 	return result;

@@ -43,7 +43,11 @@
 /* External variables --------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 extern DMA_HandleTypeDef hdma_adc1;
-//extern DAC_HandleTypeDef hdac;
+extern DAC_HandleTypeDef hdac;
+extern DMA_HandleTypeDef hdma_usart1_tx;
+extern DMA_HandleTypeDef hdma_usart2_tx;
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
 
 extern TIM_HandleTypeDef htim6;
 
@@ -71,6 +75,8 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f2xx.s).                    */
 /******************************************************************************/
+
+
 
 /**
 * @brief This function handles TIM6 global interrupt, DAC1 and DAC2 underrun error interrupts.
@@ -114,6 +120,7 @@ void OTG_FS_IRQHandler(void)
 
   /* USER CODE END OTG_FS_IRQn 1 */
 }
+
 
 /* USER CODE BEGIN 1 */
 
