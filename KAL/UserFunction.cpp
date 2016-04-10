@@ -17,7 +17,7 @@ osThreadId UserTaskID;
 static void UserTask(void const * argument);
 
 /* Create a new task reference */
-ExtendedNewTask(UserTask, osPriorityNormal ,0, 1024)
+ExtendedNewTask(UserTask, osPriorityNormal, 0, 1024)
 
 void UserFunctionSetup(void)
 {
@@ -36,6 +36,7 @@ static void UserTask(void const * argument)
   char ESPTxBuffer[64];
   unsigned int size;
   unsigned int ESPSize;
+  unsigned int FadeCounter;
 
   memset(CommandBuffer, 0, 16);
   memset(ESPRxBuffer, 0, 64);
@@ -47,16 +48,22 @@ static void UserTask(void const * argument)
   ESP8266.Initialization();
 
   /* Initialize board LEDs for debug purpose */
-  LEDS.Initialization(LED3);
-  LEDS.Initialization(LED4);
+  //LEDS.Initialization(LED3);
+  //LEDS.Initialization(LED4);
 
   GPIO.Mode(PIN0, INPUT_PULLUP);
   GPIO.Mode(PIN1, OUTPUT_OPENDRAIN);
   GPIO.Write(PIN1, LOW);
 
   /* Set the initial value of the board LEDs */
-  LEDS.Off(LED3);
-  LEDS.Off(LED4);
+  //LEDS.Off(LED3);
+  //LEDS.Off(LED4);
+
+  FadeCounter = 5000;
+  PWM.Config(PWM1, 10000, FadeCounter, PWM_POL_REV);
+  PWM.Config(PWM2, 10000, FadeCounter, PWM_POL_STD);
+  PWM.Config(PWM3, 10000, FadeCounter, PWM_POL_REV);
+  PWM.Config(PWM4, 10000, FadeCounter, PWM_POL_STD);
 
   /* Infinite loop */
   for (;;)
@@ -77,13 +84,13 @@ static void UserTask(void const * argument)
           if (strcmp(CommandBuffer, "EnableESP\n") == 0)
           {
             ESP8266.StartConfigMode();
-            LEDS.On(LED3);
+            //LEDS.On(LED3);
             ConfigMode = 1;
           }
-          else if(strcmp(CommandBuffer, "DisableESP\n") == 0)
+          else if (strcmp(CommandBuffer, "DisableESP\n") == 0)
           {
             ESP8266.StopConfigMode();
-            LEDS.Off(LED3);
+            //LEDS.Off(LED3);
             ConfigMode = 0;
           }
           else
@@ -131,17 +138,32 @@ static void UserTask(void const * argument)
         ESP8266.Read(ESPRxBuffer, ESPSize);
         if (strcmp(ESPRxBuffer, "Breakfast!\n") == 0)
         {
-          LEDS.On(LED4);
+          //LEDS.On(LED4);
           ESP8266.Println("Yeeeeeeah!");
         }
         else
         {
-          LEDS.Off(LED4);
+          //LEDS.Off(LED4);
         }
         USBObj.Write(ESPRxBuffer, ESPSize);
       }
     }
-    osDelay(100);
+
+    if (FadeCounter == 10000)
+    {
+      FadeCounter = 0;
+    }
+    else
+    {
+      FadeCounter+= 200;
+    }
+
+    PWM.SetDuty(PWM1, FadeCounter);
+    PWM.SetDuty(PWM2, (FadeCounter + 2500) % 10000);
+    PWM.SetDuty(PWM3, (FadeCounter + 5000) % 10000);
+    PWM.SetDuty(PWM4, (FadeCounter + 7500) % 10000);
+
+    osDelay(50);
   }
 }
 

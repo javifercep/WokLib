@@ -59,15 +59,15 @@ void StartDefaultTask(void const * argument)
 {
 
  LEDS.Initialization(LED1);
- LEDS.Initialization(LED2);
- LEDS.On(LED1);
- LEDS.Off(LED2);
+ //LEDS.Initialization(LED2);
+ //LEDS.On(LED1);
+ //LEDS.Off(LED2);
 
   /* Infinite loop */
   for (;;)
   {
-    LEDS.Toggle(LED1);
-    LEDS.Toggle(LED2);
+    //LEDS.Toggle(LED1);
+    //LEDS.Toggle(LED2);
 
     osDelay(500);
   }

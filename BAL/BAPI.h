@@ -27,6 +27,10 @@
 #include "ADC/ADC.h"
 #endif
 
+#if NUMBER_OF_PWM > 0
+#include "PWM/PWM.h"
+#endif
+
 #if NUMBER_OF_USART > 0
 #include "USART/USART.h"
 #endif

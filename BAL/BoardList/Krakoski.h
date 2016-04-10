@@ -158,6 +158,25 @@
 #define AN6_PIN							GPIO_PIN_1
 #define AN6_PORT						GPIOB
 
+/* PWM defines ************/
+#define NUMBER_OF_PWM                   4
+
+#define PWM1                            0
+#define PWM1_PIN                        GPIO_PIN_4
+#define PWM1_PORT                       GPIOB
+
+#define PWM2                            1
+#define PWM2_PIN                        GPIO_PIN_5
+#define PWM2_PORT                       GPIOB
+
+#define PWM3                            2
+#define PWM3_PIN                        GPIO_PIN_11
+#define PWM3_PORT                       GPIOB
+
+#define PWM4                            3
+#define PWM4_PIN                        GPIO_PIN_10
+#define PWM4_PORT                       GPIOB
+
 /* USART defines ********/
 #define NUMBER_OF_USART					2
 
