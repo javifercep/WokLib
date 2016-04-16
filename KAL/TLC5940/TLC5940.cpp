@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
+/* Private defines  ----------------------------------------------------------*/
+#define NUMBER_OF_TLC_OUTS  16
 /* Global variables ----------------------------------------------------------*/
 TLC5940Instance TLC5940;
 
@@ -112,14 +114,16 @@ void TLC5940Instance::WriteLEDData(int LEDNumber, int LEDShine)
 {
   if (LEDNumber % 2 == 0)
   {
-    this->TLCLocalData->TLCGSData[LEDNumber] = (uint8_t)LEDShine;
-    this->TLCLocalData->TLCGSData[LEDNumber + 1] |= (uint8_t)(LEDShine >> 8) & 0x0F;
+    this->TLCLocalData->TLCGSData[NUMBER_OF_TLC_OUTS - LEDNumber] = (uint8_t)(LEDShine >> 4);
+    this->TLCLocalData->TLCGSData[NUMBER_OF_TLC_OUTS - LEDNumber - 1] |= (uint8_t)(LEDShine << 4) & 0xF0;
   }
   else
   {
-    this->TLCLocalData->TLCGSData[LEDNumber] |= (uint8_t)(LEDShine << 4) & 0xF0;
-    this->TLCLocalData->TLCGSData[LEDNumber + 1] = (uint8_t)(LEDShine >> 4);
+    this->TLCLocalData->TLCGSData[NUMBER_OF_TLC_OUTS - LEDNumber] |= (uint8_t)(LEDShine >> 8) & 0x0F;
+    this->TLCLocalData->TLCGSData[NUMBER_OF_TLC_OUTS - LEDNumber - 1] = (uint8_t)LEDShine;
   }
+
+  this->WriteGSData(this->TLCLocalData);
 }
 
 void TLC5940Instance::StoreDCData(void)

@@ -8,6 +8,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "BAPI.h"
 #include "ESP8266/ESP8266.h"
+#include "TLC5940/TLC5940.h"
+#include "stdlib.h"
 #include "string.h"
 
 /* Private variables ---------------------------------------------------------*/
@@ -36,7 +38,6 @@ static void UserTask(void const * argument)
   char ESPTxBuffer[64];
   unsigned int size;
   unsigned int ESPSize;
-  unsigned int FadeCounter;
 
   memset(CommandBuffer, 0, 16);
   memset(ESPRxBuffer, 0, 64);
@@ -46,24 +47,15 @@ static void UserTask(void const * argument)
   ConfigMode = 0;
 
   ESP8266.Initialization();
+  TLC5940.Initialization();
 
   /* Initialize board LEDs for debug purpose */
-  //LEDS.Initialization(LED3);
-  //LEDS.Initialization(LED4);
-
-  GPIO.Mode(PIN0, INPUT_PULLUP);
-  GPIO.Mode(PIN1, OUTPUT_OPENDRAIN);
-  GPIO.Write(PIN1, LOW);
+  LEDS.Initialization(LED3);
+  LEDS.Initialization(LED4);
 
   /* Set the initial value of the board LEDs */
-  //LEDS.Off(LED3);
-  //LEDS.Off(LED4);
-
-  FadeCounter = 5000;
-  PWM.Config(PWM1, 10000, FadeCounter, PWM_POL_REV);
-  PWM.Config(PWM2, 10000, FadeCounter, PWM_POL_STD);
-  PWM.Config(PWM3, 10000, FadeCounter, PWM_POL_REV);
-  PWM.Config(PWM4, 10000, FadeCounter, PWM_POL_STD);
+  LEDS.Off(LED3);
+  LEDS.Off(LED4);
 
   /* Infinite loop */
   for (;;)
@@ -74,45 +66,68 @@ static void UserTask(void const * argument)
     {
       USBObj.Read(&command, 1);
       USBObj.Read(&dummy, 1);
+      size = USBObj.Available();
+      USBObj.Read(CommandBuffer, size);
 
       switch (command)
       {
         case 'c':
           /* Read the message from USB interface */
-          USBObj.Read(CommandBuffer, USBObj.Available());
 
           if (strcmp(CommandBuffer, "EnableESP\n") == 0)
           {
             ESP8266.StartConfigMode();
-            //LEDS.On(LED3);
+            LEDS.On(LED3);
             ConfigMode = 1;
           }
           else if (strcmp(CommandBuffer, "DisableESP\n") == 0)
           {
             ESP8266.StopConfigMode();
-            //LEDS.Off(LED3);
+            LEDS.Off(LED3);
             ConfigMode = 0;
           }
           else
           {
             USBObj.Println("Incorrect command");
           }
-          memset(CommandBuffer, 0, 16);
           break;
         case 'e':
           /* Read the message from USB interface */
           size = USBObj.Available();
-          USBObj.Read(ESPTxBuffer, size);
+          memcpy(ESPTxBuffer, CommandBuffer, size);
           NewESPdata = 1;
           break;
         case 't':
-          USBObj.Read(CommandBuffer, USBObj.Available());
           USBObj.Println(Test);
-          memset(CommandBuffer, 0, 16);
+          break;
+        case '1':
+          TLC5940.WriteLEDData(1, atoi(CommandBuffer));
+          break;
+        case '2':
+          TLC5940.WriteLEDData(2, atoi(CommandBuffer));
+          break;
+        case '3':
+          TLC5940.WriteLEDData(3, atoi(CommandBuffer));
+          break;
+        case '4':
+          TLC5940.WriteLEDData(4, atoi(CommandBuffer));
+          break;
+        case '5':
+          TLC5940.WriteLEDData(5, atoi(CommandBuffer));
+          break;
+        case '6':
+          TLC5940.WriteLEDData(6, atoi(CommandBuffer));
+          break;
+        case '7':
+          TLC5940.WriteLEDData(7, atoi(CommandBuffer));
+          break;
+        case '8':
+          TLC5940.WriteLEDData(8, atoi(CommandBuffer));
           break;
         default:
           break;
       }
+      memset(CommandBuffer, 0, 16);
     }
 
     if (ConfigMode)
@@ -138,30 +153,16 @@ static void UserTask(void const * argument)
         ESP8266.Read(ESPRxBuffer, ESPSize);
         if (strcmp(ESPRxBuffer, "Breakfast!\n") == 0)
         {
-          //LEDS.On(LED4);
+          LEDS.On(LED4);
           ESP8266.Println("Yeeeeeeah!");
         }
         else
         {
-          //LEDS.Off(LED4);
+          LEDS.Off(LED4);
         }
         USBObj.Write(ESPRxBuffer, ESPSize);
       }
     }
-
-    if (FadeCounter == 10000)
-    {
-      FadeCounter = 0;
-    }
-    else
-    {
-      FadeCounter+= 200;
-    }
-
-    PWM.SetDuty(PWM1, FadeCounter);
-    PWM.SetDuty(PWM2, (FadeCounter + 2500) % 10000);
-    PWM.SetDuty(PWM3, (FadeCounter + 5000) % 10000);
-    PWM.SetDuty(PWM4, (FadeCounter + 7500) % 10000);
 
     osDelay(50);
   }
