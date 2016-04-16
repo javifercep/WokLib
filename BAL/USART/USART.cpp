@@ -139,10 +139,6 @@ int UsartInstance::Initialization(unsigned char module, unsigned int baudrate)
 	return ret;
 }
 
-void Deinitialization()
-{
-
-}
 
 void UsartInstance::Configuration(unsigned int command, void* arg)
 {

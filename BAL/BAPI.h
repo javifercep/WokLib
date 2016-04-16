@@ -35,6 +35,10 @@
 #include "USART/USART.h"
 #endif
 
+#if NUMBER_OF_SPI > 0
+#include "SPI/SPI.h"
+#endif
+
 #if NUMBER_OF_USB_CLASS > 0
 #include "USB/USB.h"
 #endif

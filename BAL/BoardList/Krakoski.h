@@ -182,6 +182,9 @@
 
 #define DFLT_USART_BAUDRATE				115200
 
+/* SPI defines ********/
+#define NUMBER_OF_SPI                   2
+
 /* USB defines ********/
 #define NUMBER_OF_USB_CLASS				1
 

@@ -21,11 +21,16 @@
 #define TLC_BLANK	        PIN10
 #define TLC_XLAT	        PIN8
 
-#define TLC_SPI		        USART_MODULE_1
-#define SPIInst		        USARTObj1
+#define TLC_SPI		        SPI_MODULE_1
+#define SPIInst		        SPIObj1
 
 
 /* Exported typedef ------------------------------------------------------------*/
+typedef struct
+{
+    uint8_t TLCGSData[24];
+    uint8_t TLCDCData[12];
+}TLCDataInstance;
 
 /* Exported class ------------------------------------------------------------*/
 
@@ -35,11 +40,17 @@
  */
 class TLC5940Instance {
 private:
-	//SPIInstance *SPIInst;
+    TLCDataInstance *TLCLocalData;
 public:
 	TLC5940Instance(void);
 	~TLC5940Instance(void);
 	void Initialization(void);
+	void Enable(void);
+	void Disable(void);
+	void WriteGSData(TLCDataInstance *data);
+	void WriteDCData(TLCDataInstance *data);
+	void WriteLEDData(int LEDNumber, int LEDShine);
+	void StoreDCData(void);
 };
 
 extern TLC5940Instance TLC5940;

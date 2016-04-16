@@ -30,8 +30,6 @@
  *       such as initializations.
  */
 class ESP8266Instance {
-private:
-	UsartInstance *USARTIns;
 public:
 	ESP8266Instance(void);
 	~ESP8266Instance(void);
