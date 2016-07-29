@@ -25,10 +25,9 @@
  *       such as initializations.
  */
 class UsartInstance {
-private:
+  public:
 	UART_HandleTypeDef huart;
 	DMA_HandleTypeDef hdma_usart_tx;
-public:
 	/**
 	 * @brief Memory container to store the last read message
 	 */

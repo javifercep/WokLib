@@ -12,9 +12,8 @@
 #ifdef KRAKOSKI_BOARD
 #include "Krakoski.h"
 #elif NOODLE_BOARD
-#include "Noodleboard.h"
+#include "Noodle.h"
 #endif
-#include "uSD/uSD.h"
 
 #if NUMBER_OF_GPIO > 0
 #include "GPIO/GPIO.h"
@@ -48,9 +47,10 @@
 #include "RTOS/RTOS.h"
 #endif
 
-/* SD ****************************/
-#define SD_CD_PIN						GPIO_PIN_1
-#define SD_CD_PORT						GPIOC
+#if SD_SUPPORTED != 0
+#include "uSD/uSD.h"
+#endif
+
 
 /* Exported typedef ------------------------------------------------------------*/
 

@@ -16,17 +16,17 @@
 osThreadId UserTaskID;
 
 /* Private function prototypes -----------------------------------------------*/
-static void UserTask(void const * argument);
+static void UserLoopTask(void const * argument);
 
 /* Create a new task reference */
-ExtendedNewTask(UserTask, osPriorityNormal, 0, 1024)
+ExtendedNewTask(UserLoopTask, osPriorityNormal, 0, 1024)
 
-void UserFunctionSetup(void)
+void UserSetupTask(void)
 {
-  UserTaskID = RTOS.CreateTask(TaskRef(UserTask), NULL);
+  UserTaskID = RTOS.CreateTask(TaskRef(UserLoopTask), NULL);
 }
 
-static void UserTask(void const * argument)
+static void UserLoopTask(void const * argument)
 {
   char command;
   char dummy;

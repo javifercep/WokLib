@@ -8,4 +8,4 @@
 /* Includes ------------------------------------------------------------------*/
 /* Public variables ---------------------------------------------------------*/
 /* Public function prototypes -----------------------------------------------*/
-void UserFunctionSetup(void);
+void UserSetupTask(void);

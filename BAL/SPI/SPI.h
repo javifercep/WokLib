@@ -25,12 +25,11 @@
  *       such as initializations.
  */
 class SPIInstance {
-private:
+  public:
     SPI_HandleTypeDef hspi;
     DMA_HandleTypeDef hdma_hspi_rx;
     DMA_HandleTypeDef hdma_hspi_tx;
 
-public:
 	/**
 	 *@brief Read Queue. The read CurrentChar values are queued on this
 	 *		 variable.

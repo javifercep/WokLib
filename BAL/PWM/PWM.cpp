@@ -15,29 +15,30 @@
 #define	DEFAULT_PWM_PERIOD      10000 	/* 1 ms */
 #define	DEFAULT_PWM_DUTY        5000  	/* 50 % */
 
-#define NUM_TIM_INDEX           2
-#define TIM3_INDEX              0
-#define TIM2_INDEX              1
 
 /* Exported variables	  --------------------------------------------------------*/
 PWMInstance PWM;
 
 /* private variables	  --------------------------------------------------------*/
-TIM_HandleTypeDef htim[NUM_TIM_INDEX];
+TIM_HandleTypeDef htim[NUMBER_OF_TIMER_USED];
 
-static const uint8_t PinTimerMapping[NUMBER_OF_PWM] =
-{
-TIM3_INDEX, TIM3_INDEX, TIM2_INDEX, TIM2_INDEX };
+static TIM_TypeDef* UsedTimer[NUMBER_OF_TIMER_USED] = TIMER_USED_ARRAYS;
 
-static const uint32_t PinChannelMapping[NUMBER_OF_PWM] =
-{
-TIM_CHANNEL_1, TIM_CHANNEL_2, TIM_CHANNEL_4, TIM_CHANNEL_3 };
+static const uint32_t ChannelsMapping1[ATTACHED_OUT_TO_TIMER_1] = OUT_TO_TIMER_MAPPING_1_ARRAY;
 
-static GPIO_TypeDef* GPIOPortList[NUMBER_OF_PWM] =
-{ PWM1_PORT, PWM2_PORT, PWM3_PORT, PWM4_PORT};
+static const uint8_t NumberOfChannelsPerTimer[NUMBER_OF_TIMER_USED] = ATTACHED_OUT_PER_TIMER_ARRAY;
 
-static const uint16_t GPIOPinList[NUMBER_OF_PWM] =
-{ PWM1_PIN, PWM2_PIN, PWM3_PIN, PWM4_PIN};
+#if NUMBER_OF_TIMER_USED > 1
+static const uint32_t ChannelsMapping2[ATTACHED_OUT_TO_TIMER_2] = OUT_TO_TIMER_MAPPING_2_ARRAY;
+#endif
+
+static const uint8_t PinTimerMapping[NUMBER_OF_PWM] = PWM_INSTANCE_ARRAY;
+
+static const uint32_t PinChannelMapping[NUMBER_OF_PWM] = PWM_TIM_CHANNEL_ARRAY;
+
+static GPIO_TypeDef* GPIOPortList[NUMBER_OF_PWM] = PWM_PORT_ARRAY;
+
+static const uint16_t GPIOPinList[NUMBER_OF_PWM] = PWM_PIN_ARRAY;
 
 /* private functions prototypes -------------------------------------------------*/
 /* private class functions -------------------------------------------------------*/
@@ -54,6 +55,8 @@ void PWMInstance::Initialization(void)
 {
   TIM_MasterConfigTypeDef sMasterConfig;
   TIM_OC_InitTypeDef sConfigOC;
+  uint8_t TimerIndex;
+  uint8_t ChannelIndex;
 
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
@@ -63,37 +66,22 @@ void PWMInstance::Initialization(void)
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
 
-  htim[TIM2_INDEX].Instance = TIM2;
-  htim[TIM2_INDEX].Init.Prescaler = DEFAULT_PWM_PRESCALER;
-  htim[TIM2_INDEX].Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim[TIM2_INDEX].Init.Period = DEFAULT_PWM_PERIOD;
-  htim[TIM2_INDEX].Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  HAL_TIM_PWM_Init(&(htim[TIM2_INDEX]));
+  for (TimerIndex = 0; TimerIndex < NUMBER_OF_TIMER_USED; TimerIndex++)
+  {
+    htim[TimerIndex].Instance = UsedTimer[TimerIndex];
+    htim[TimerIndex].Init.Prescaler = DEFAULT_PWM_PRESCALER;
+    htim[TimerIndex].Init.CounterMode = TIM_COUNTERMODE_UP;
+    htim[TimerIndex].Init.Period = DEFAULT_PWM_PERIOD;
+    htim[TimerIndex].Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    HAL_TIM_PWM_Init(&(htim[TimerIndex]));
 
-  HAL_TIMEx_MasterConfigSynchronization(&(htim[TIM2_INDEX]), &sMasterConfig);
+    HAL_TIMEx_MasterConfigSynchronization(&(htim[TimerIndex]), &sMasterConfig);
 
-  HAL_TIM_PWM_ConfigChannel(&(htim[TIM2_INDEX]), &sConfigOC, TIM_CHANNEL_3);
-  HAL_TIM_PWM_ConfigChannel(&(htim[TIM2_INDEX]), &sConfigOC, TIM_CHANNEL_4);
-
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = DEFAULT_PWM_DUTY;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-
-  htim[TIM3_INDEX].Instance = TIM3;
-  htim[TIM3_INDEX].Init.Prescaler = DEFAULT_PWM_PRESCALER;
-  htim[TIM3_INDEX].Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim[TIM3_INDEX].Init.Period = DEFAULT_PWM_PERIOD;
-  htim[TIM3_INDEX].Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  HAL_TIM_PWM_Init(&(htim[TIM3_INDEX]));
-
-  HAL_TIMEx_MasterConfigSynchronization(&(htim[TIM3_INDEX]), &sMasterConfig);
-
-  HAL_TIM_PWM_ConfigChannel(&(htim[TIM3_INDEX]), &sConfigOC, TIM_CHANNEL_1);
-  HAL_TIM_PWM_ConfigChannel(&(htim[TIM3_INDEX]), &sConfigOC, TIM_CHANNEL_2);
+    for (ChannelIndex = 0; ChannelIndex < NumberOfChannelsPerTimer[TimerIndex]; ChannelIndex++)
+    {
+      HAL_TIM_PWM_ConfigChannel(&(htim[TimerIndex]), &sConfigOC, ChannelsMapping1[ChannelIndex]);
+    }
+  }
 }
 
 void PWMInstance::Config(unsigned int pin, unsigned int period,
@@ -133,9 +121,13 @@ void PWMInstance::Config(unsigned int pin, unsigned int period,
   {
     GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
   }
-  else
+  else if (htim[PinTimerMapping[pin]].Instance == TIM3)
   {
     GPIO_InitStruct.Alternate = GPIO_AF2_TIM3;
+  }
+  else
+  {
+
   }
 
   HAL_GPIO_Init(GPIOPortList[pin], &GPIO_InitStruct);
@@ -194,3 +186,35 @@ void PWMInstance::SetPolarity(unsigned int pin, PWMPolarity polarity)
   HAL_TIM_PWM_ConfigChannel(&(htim[PinTimerMapping[pin]]), &sConfigOC, PinChannelMapping[pin]);
 }
 
+/* ST microelectronics HAL code **********************************/
+
+void HAL_TIM_PWM_MspInit(TIM_HandleTypeDef* htim_pwm)
+{
+
+  if(htim_pwm->Instance==TIM2)
+  {
+    /* Peripheral clock enable */
+    __HAL_RCC_TIM2_CLK_ENABLE();
+  }
+  else if(htim_pwm->Instance==TIM3)
+  {
+    /* Peripheral clock enable */
+    __HAL_RCC_TIM3_CLK_ENABLE();
+  }
+}
+
+void HAL_TIM_PWM_MspDeInit(TIM_HandleTypeDef* htim_pwm)
+{
+
+  if(htim_pwm->Instance==TIM2)
+  {
+    /* Peripheral clock disable */
+    __HAL_RCC_TIM2_CLK_DISABLE();
+  }
+  else if(htim_pwm->Instance==TIM3)
+  {
+    /* Peripheral clock disable */
+    __HAL_RCC_TIM3_CLK_DISABLE();
+  }
+
+}
