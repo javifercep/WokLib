@@ -151,7 +151,9 @@
 								</inputType>
 							</tool>
 							<tool id="com.atollic.truestudio.ar.base.711432878" name="Archiver" superClass="com.atollic.truestudio.ar.base"/>
-							<tool id="com.atollic.truestudio.exe.debug.toolchain.secoutput.2066571991" name="Other" superClass="com.atollic.truestudio.exe.debug.toolchain.secoutput"/>
+							<tool id="com.atollic.truestudio.exe.debug.toolchain.secoutput.2066571991" name="Other" superClass="com.atollic.truestudio.exe.debug.toolchain.secoutput">
+								<option id="com.atollic.truestudio.secoutput.general.convert.699042936" superClass="com.atollic.truestudio.secoutput.general.convert" value="true" valueType="boolean"/>
+							</tool>
 						</toolChain>
 					</folderInfo>
 				</configuration>
@@ -335,10 +337,10 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration configurationName="Release">
-			<resource resourceType="PROJECT" workspacePath="/KrakoskiLib"/>
-		</configuration>
 		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/NoddleLib"/>
+		</configuration>
+		<configuration configurationName="Release">
 			<resource resourceType="PROJECT" workspacePath="/KrakoskiLib"/>
 		</configuration>
 	</storageModule>

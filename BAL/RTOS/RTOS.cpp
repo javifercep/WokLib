@@ -66,7 +66,7 @@ void StartDefaultTask(void const * argument)
   /* Infinite loop */
   for (;;)
   {
-    //LEDS.Toggle(LED1);
+    LEDS.Toggle(LED1);
     //LEDS.Toggle(LED2);
 
     osDelay(500);

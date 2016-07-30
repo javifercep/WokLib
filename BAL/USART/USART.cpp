@@ -5,9 +5,8 @@
   *******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "Krakoski.h"
 #include "USART/USART.h"
-#include "RTOS/RTOS.h"
+#include "BAPI.h"
 #include "stm32f2xx.h"
 
 #include <stdio.h>
@@ -21,11 +20,13 @@ UsartInstance USARTObj2;
 #endif
 
 /* Private variables ---------------------------------------------------------*/
-osMutexId USART1TxMutexHandle;
-osMutexId USART1RxMutexHandle;
-
 osMutexDef(USART1TxMutex);
 osMutexDef(USART1RxMutex);
+
+#if NUMBER_OF_USART > 1
+osMutexDef(USART2TxMutex);
+osMutexDef(USART2RxMutex);
+#endif
 
 /* Private function prototypes -----------------------------------------------*/
 #ifdef __cplusplus
@@ -67,14 +68,17 @@ int UsartInstance::Initialization(unsigned char module, unsigned int baudrate)
 	switch (module)
 	{
 		case USART_MODULE_1:
-		    USART1TxMutexHandle = osMutexCreate(osMutex(USART1TxMutex));
-		    USART1RxMutexHandle = osMutexCreate(osMutex(USART1RxMutex));
+		    this->USARTTxMutexHandle = osMutexCreate(osMutex(USART1TxMutex));
+		    this->USARTRxMutexHandle = osMutexCreate(osMutex(USART1RxMutex));
 
 			this->huart.Instance = USART_USED_1;
 			break;
 
 #if NUMBER_OF_USART > 1
 		case USART_MODULE_2:
+            this->USARTTxMutexHandle = osMutexCreate(osMutex(USART2TxMutex));
+            this->USARTRxMutexHandle = osMutexCreate(osMutex(USART2RxMutex));
+
 			this->huart.Instance = USART_USED_2;
 			break;
 #endif
@@ -119,6 +123,7 @@ int UsartInstance::Initialization(unsigned char module, unsigned int baudrate)
 	  {
 
 	  }
+
 	  this->huart.Init.BaudRate = baudrate;
 	  this->huart.Init.WordLength = UART_WORDLENGTH_8B;
 	  this->huart.Init.StopBits = UART_STOPBITS_1;
@@ -161,9 +166,9 @@ unsigned int UsartInstance::Write(char *source, unsigned int size)
 {
 	uint8_t *pTemp = (uint8_t *)source;
 
-    osMutexWait(USART1TxMutexHandle, 0);
+    osMutexWait(this->USARTTxMutexHandle, 0);
 	HAL_UART_Transmit_DMA(&(this->huart), pTemp, size);
-	osMutexRelease (USART1TxMutexHandle);
+	osMutexRelease (this->USARTTxMutexHandle);
 
 	return size;
 }
@@ -173,14 +178,14 @@ unsigned int UsartInstance::Read(char *destination, unsigned int size)
 	unsigned char *pTemp = (unsigned char *)destination;
 	unsigned int result = size;
 
-	osMutexWait(USART1RxMutexHandle, 0);
+	osMutexWait(this->USARTRxMutexHandle, 0);
 	if (result > this->USARTRxQueue.Available())
 	{
 		result = this->USARTRxQueue.Available();
 	}
 
 	this->USARTRxQueue.ReadToArray(pTemp, result);
-	osMutexWait(USART1RxMutexHandle, 0);
+	osMutexWait(this->USARTRxMutexHandle, 0);
 
 	return result;
 }
@@ -394,23 +399,19 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 {
 
   GPIO_InitTypeDef GPIO_InitStruct;
-  if(huart->Instance==USART1)
+
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+
+  if (huart->Instance == USART1)
   {
     /* Peripheral clock enable */
     __USART1_CLK_ENABLE();
 
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
 
-    GPIO_InitStruct.Pin = USARTTX1_PIN;
-    HAL_GPIO_Init(USARTTX1_PORT, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = USARTRX1_PIN;
-    HAL_GPIO_Init(USARTRX1_PORT, &GPIO_InitStruct);
-
-  /* Peripheral interrupt init*/
+    /* Peripheral interrupt init*/
     HAL_NVIC_SetPriority(USART1_IRQn, 4, 0);
     HAL_NVIC_EnableIRQ(USART1_IRQn);
   }
@@ -419,16 +420,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     /* Peripheral clock enable */
     __USART2_CLK_ENABLE();
 
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
-
-    GPIO_InitStruct.Pin = USARTTX2_PIN;
-    HAL_GPIO_Init(USARTTX2_PORT, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = USARTRX2_PIN;
-    HAL_GPIO_Init(USARTRX2_PORT, &GPIO_InitStruct);
 
   /* Peripheral interrupt init*/
     HAL_NVIC_SetPriority(USART2_IRQn, 4, 0);
@@ -439,20 +431,34 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
     /* Peripheral clock enable */
     __UART4_CLK_ENABLE();
 
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_PULLUP;
-    GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
-
-    GPIO_InitStruct.Pin = USARTTX2_PIN;
-    HAL_GPIO_Init(USARTTX2_PORT, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = USARTRX2_PIN;
-    HAL_GPIO_Init(USARTRX2_PORT, &GPIO_InitStruct);
+    GPIO_InitStruct.Alternate = GPIO_AF8_UART4;
 
   /* Peripheral interrupt init*/
-    HAL_NVIC_SetPriority(USART2_IRQn, 4, 0);
-    HAL_NVIC_EnableIRQ(USART2_IRQn);
+    HAL_NVIC_SetPriority(UART4_IRQn, 4, 0);
+    HAL_NVIC_EnableIRQ(UART4_IRQn);
+  }
+
+  if (huart->Instance == USART_USED_1)
+  {
+    GPIO_InitStruct.Pin = USARTTX1_PIN;
+    HAL_GPIO_Init(USARTTX1_PORT, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = USARTRX1_PIN;
+    HAL_GPIO_Init(USARTRX1_PORT, &GPIO_InitStruct);
+  }
+#if NUMBER_OF_USART > 1
+  else if (huart->Instance == USART_USED_2)
+  {
+    GPIO_InitStruct.Pin = USARTTX2_PIN;
+    HAL_GPIO_Init(USARTTX1_PORT, &GPIO_InitStruct);
+
+    GPIO_InitStruct.Pin = USARTRX2_PIN;
+    HAL_GPIO_Init(USARTRX1_PORT, &GPIO_InitStruct);
+  }
+#endif
+  else
+  {
+
   }
 
 }
@@ -465,12 +471,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
     /* Peripheral clock disable */
     __USART1_CLK_DISABLE();
 
-    /**USART1 GPIO Configuration
-    PB6     ------> USART1_TX
-    PB7     ------> USART1_RX
-    */
-    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_6|GPIO_PIN_7);
-
     /* Peripheral DMA DeInit*/
     HAL_DMA_DeInit(huart->hdmatx);
 
@@ -482,17 +482,28 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* huart)
     /* Peripheral clock disable */
     __USART2_CLK_DISABLE();
 
-    /**USART2 GPIO Configuration
-    PA2     ------> USART2_TX
-    PA3     ------> USART2_RX
-    */
-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2|GPIO_PIN_3);
-
     /* Peripheral DMA DeInit*/
     HAL_DMA_DeInit(huart->hdmatx);
 
     /* Peripheral interrupt DeInit*/
     HAL_NVIC_DisableIRQ(USART2_IRQn);
+  }
+
+  if (huart->Instance == USART_USED_1)
+  {
+    HAL_GPIO_DeInit(USARTTX1_PORT, USARTTX1_PIN);
+    HAL_GPIO_DeInit(USARTRX1_PORT, USARTRX1_PIN);
+  }
+#if NUMBER_OF_USART > 1
+  else if (huart->Instance == USART_USED_2)
+  {
+    HAL_GPIO_DeInit(USARTTX2_PORT, USARTTX2_PIN);
+    HAL_GPIO_DeInit(USARTRX2_PORT, USARTRX2_PIN);
+  }
+#endif
+  else
+  {
+
   }
 
 }

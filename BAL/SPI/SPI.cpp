@@ -5,9 +5,8 @@
   *******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "Krakoski.h"
 #include "SPI/SPI.h"
-#include "RTOS/RTOS.h"
+#include "BAPI.h"
 #include "stm32f2xx.h"
 
 #include <stdio.h>
@@ -19,11 +18,13 @@ SPIInstance SPIObj1;
 SPIInstance SPIObj2;
 
 /* Private variables ---------------------------------------------------------*/
-osMutexId SPI1TxMutexHandle;
-osMutexId SPI1RxMutexHandle;
-
 osMutexDef(SPI1TxMutex);
 osMutexDef(SPI1RxMutex);
+
+#if NUMBER_OF_SPI > 1
+osMutexDef(SPI2TxMutex);
+osMutexDef(SPI2RxMutex);
+#endif
 
 /* Private function prototypes -----------------------------------------------*/
 #ifdef __cplusplus
@@ -60,14 +61,16 @@ int SPIInstance::Initialization(unsigned char module)
 	switch (module)
 	{
 		case SPI_MODULE_1:
-		    SPI1TxMutexHandle = osMutexCreate(osMutex(SPI1TxMutex));
-		    SPI1RxMutexHandle = osMutexCreate(osMutex(SPI1RxMutex));
+		    this->SPITxMutexHandle = osMutexCreate(osMutex(SPI1TxMutex));
+		    this->SPIRxMutexHandle = osMutexCreate(osMutex(SPI1RxMutex));
 
 			this->hspi.Instance = SPI_USED_1;
 
 			break;
 #if NUMBER_OF_SPI > 1
 		case SPI_MODULE_2:
+            this->SPITxMutexHandle = osMutexCreate(osMutex(SPI2TxMutex));
+            this->SPIRxMutexHandle = osMutexCreate(osMutex(SPI2RxMutex));
 
             this->hspi.Instance = SPI_USED_2;
 
@@ -186,9 +189,9 @@ unsigned int SPIInstance::Write(char *source, unsigned int size)
 	/* Wait for an active transfer */
 	while (this->TransferSize != 0);
 	this->TransferSize = size;
-    osMutexWait(SPI1TxMutexHandle, 0);
+    osMutexWait(this->SPITxMutexHandle, 0);
     HAL_SPI_TransmitReceive_DMA(&(this->hspi), pTemp, this->SPI_RXTemp_Buf, size);
-	osMutexRelease (SPI1TxMutexHandle);
+	osMutexRelease (this->SPITxMutexHandle);
 
 	return size;
 }
@@ -198,14 +201,14 @@ unsigned int SPIInstance::Read(char *destination, unsigned int size)
 	unsigned char *pTemp = (unsigned char *)destination;
 	unsigned int result = size;
 
-	osMutexWait(SPI1RxMutexHandle, 0);
+	osMutexWait(this->SPIRxMutexHandle, 0);
 	if (result > this->SPIRxQueue.Available())
 	{
 		result = this->SPIRxQueue.Available();
 	}
 
 	this->SPIRxQueue.ReadToArray(pTemp, result);
-	osMutexWait(SPI1RxMutexHandle, 0);
+	osMutexWait(this->SPIRxMutexHandle, 0);
 
 	return result;
 }
@@ -298,23 +301,31 @@ void DMA1_Stream4_IRQHandler(void)
 
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 {
-
   GPIO_InitTypeDef GPIO_InitStruct;
+
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+
   if(hspi->Instance==SPI1)
   {
     /* Peripheral clock enable */
     __HAL_RCC_SPI1_CLK_ENABLE();
 
-    /**SPI1 GPIO Configuration
-    PA5     ------> SPI1_SCK
-    PA6     ------> SPI1_MISO
-    PA7     ------> SPI1_MOSI
-    */
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
 
+  }
+  else if(hspi->Instance==SPI2)
+  {
+    /* Peripheral clock enable */
+    __HAL_RCC_SPI2_CLK_ENABLE();
+
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+
+  }
+
+  if (hspi->Instance == SPI_USED_1)
+  {
     GPIO_InitStruct.Pin = SPICLK1_PIN;
     HAL_GPIO_Init(SPICLK1_PORT, &GPIO_InitStruct);
 
@@ -323,37 +334,24 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 
     GPIO_InitStruct.Pin = SPIMISO1_PIN;
     HAL_GPIO_Init(SPIMISO1_PORT, &GPIO_InitStruct);
-
   }
-  else if(hspi->Instance==SPI2)
+#if NUMBER_OF_SPI > 1
+  else if (hspi->Instance == SPI_USED_2)
   {
-  /* USER CODE BEGIN SPI2_MspInit 0 */
-
-  /* USER CODE END SPI2_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_SPI2_CLK_ENABLE();
-
-    /**SPI2 GPIO Configuration
-    PB13     ------> SPI2_SCK
-    PB14     ------> SPI2_MISO
-    PB15     ------> SPI2_MOSI
-    */
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
-
     GPIO_InitStruct.Pin = SPICLK2_PIN;
     HAL_GPIO_Init(SPICLK2_PORT, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = SPIMOSI1_PIN;
+    GPIO_InitStruct.Pin = SPIMOSI2_PIN;
     HAL_GPIO_Init(SPIMOSI2_PORT, &GPIO_InitStruct);
 
-    GPIO_InitStruct.Pin = SPIMISO1_PIN;
+    GPIO_InitStruct.Pin = SPIMISO2_PIN;
     HAL_GPIO_Init(SPIMISO2_PORT, &GPIO_InitStruct);
+  }
+#endif
+  else
+  {
 
   }
-
 }
 
 void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
@@ -364,15 +362,6 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
     /* Peripheral clock disable */
     __HAL_RCC_SPI1_CLK_DISABLE();
 
-    /**SPI1 GPIO Configuration
-    PA5     ------> SPI1_SCK
-    PA6     ------> SPI1_MISO
-    PA7     ------> SPI1_MOSI
-    */
-    HAL_GPIO_DeInit(SPICLK1_PORT,  SPICLK1_PIN);
-    HAL_GPIO_DeInit(SPIMOSI1_PORT, SPIMOSI1_PIN);
-    HAL_GPIO_DeInit(SPIMISO1_PORT, SPIMISO1_PIN);
-
     /* Peripheral DMA DeInit*/
     HAL_DMA_DeInit(hspi->hdmarx);
     HAL_DMA_DeInit(hspi->hdmatx);
@@ -382,20 +371,29 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* hspi)
     /* Peripheral clock disable */
     __HAL_RCC_SPI2_CLK_DISABLE();
 
-    /**SPI2 GPIO Configuration
-    PB13     ------> SPI2_SCK
-    PB14     ------> SPI2_MISO
-    PB15     ------> SPI2_MOSI
-    */
-    HAL_GPIO_DeInit(SPICLK2_PORT,  SPICLK2_PIN);
-    HAL_GPIO_DeInit(SPIMOSI2_PORT, SPIMOSI2_PIN);
-    HAL_GPIO_DeInit(SPIMISO2_PORT, SPIMISO2_PIN);
-
     /* Peripheral DMA DeInit*/
     HAL_DMA_DeInit(hspi->hdmarx);
     HAL_DMA_DeInit(hspi->hdmatx);
   }
 
+  if (hspi->Instance == SPI_USED_1)
+  {
+    HAL_GPIO_DeInit(SPICLK1_PORT,  SPICLK1_PIN);
+    HAL_GPIO_DeInit(SPIMOSI1_PORT, SPIMOSI1_PIN);
+    HAL_GPIO_DeInit(SPIMISO1_PORT, SPIMISO1_PIN);
+  }
+#if NUMBER_OF_SPI > 1
+  else if (hspi->Instance == SPI_USED_2)
+  {
+    HAL_GPIO_DeInit(SPICLK2_PORT,  SPICLK2_PIN);
+    HAL_GPIO_DeInit(SPIMOSI2_PORT, SPIMOSI2_PIN);
+    HAL_GPIO_DeInit(SPIMISO2_PORT, SPIMISO2_PIN);
+  }
+#endif
+  else
+  {
+
+  }
 }
 
 

@@ -9,6 +9,7 @@
 #define SPI_H_
 
 /* Includes ------------------------------------------------------------------*/
+#include "RTOS/RTOS.h"
 #include "TOOLS/BufferFunctions.h"
 #include "stm32f2xx_hal.h"
 
@@ -25,6 +26,9 @@
  *       such as initializations.
  */
 class SPIInstance {
+  private:
+    osMutexId SPITxMutexHandle;
+    osMutexId SPIRxMutexHandle;
   public:
     SPI_HandleTypeDef hspi;
     DMA_HandleTypeDef hdma_hspi_rx;

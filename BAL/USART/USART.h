@@ -9,6 +9,7 @@
 #define USART_H_
 
 /* Includes ------------------------------------------------------------------*/
+#include "RTOS/RTOS.h"
 #include "TOOLS/BufferFunctions.h"
 #include "stm32f2xx_hal.h"
 
@@ -25,6 +26,9 @@
  *       such as initializations.
  */
 class UsartInstance {
+  private:
+    osMutexId USARTTxMutexHandle;
+    osMutexId USARTRxMutexHandle;
   public:
 	UART_HandleTypeDef huart;
 	DMA_HandleTypeDef hdma_usart_tx;

@@ -9,11 +9,7 @@
 #define BAPI_H_
 
 /* Includes ------------------------------------------------------------------*/
-#ifdef KRAKOSKI_BOARD
-#include "Krakoski.h"
-#elif NOODLE_BOARD
-#include "Noodle.h"
-#endif
+#include "BoardSelection.h"
 
 #if NUMBER_OF_GPIO > 0
 #include "GPIO/GPIO.h"

@@ -55,10 +55,10 @@ void BoardInstance::Initialization(void)
  	__GPIOB_CLK_ENABLE();
  	__GPIOD_CLK_ENABLE();
 
- 	USARTObj2.Initialization(USART_MODULE_2, DFLT_USART_BAUDRATE);
- 	ADCObj.Initialization();
- 	uSD.Initialization();
- 	USBObj.Initialization();
+ 	//USARTObj2.Initialization(USART_MODULE_2, DFLT_USART_BAUDRATE);
+ 	//ADCObj.Initialization();
+ 	//uSD.Initialization();
+ 	//USBObj.Initialization();
 }
 
 /** System Clock Configuration

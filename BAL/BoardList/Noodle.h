@@ -227,6 +227,21 @@
 
 #define USART_USED_1                    UART4
 #define USART_USED_2                    USART1
+
+#define USARTTX1_PIN                    GPIO_PIN_0
+#define USARTTX1_PORT                   GPIOA
+
+#define USARTRX1_PIN                    GPIO_PIN_1
+#define USARTRX1_PORT                   GPIOA
+
+#define USARTCK2_PIN                    GPIO_PIN_8
+#define USARTCK2_PORT                   GPIOA
+
+#define USARTTX2_PIN                    GPIO_PIN_9
+#define USARTTX2_PORT                   GPIOA
+
+#define USARTRX2_PIN                    GPIO_PIN_10
+#define USARTRX2_PORT                   GPIOA
 /* SPI defines ********/
 #define NUMBER_OF_SPI                   1
 
