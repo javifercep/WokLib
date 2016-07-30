@@ -23,11 +23,14 @@
 
 /* Exportec variables ------------------------------------------------------------*/
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
+extern PCD_HandleTypeDef hpcd_USB_OTG_HS;
 /* private variables	  --------------------------------------------------------*/
 extern Queue USBRxQueue;
 
 USBInstance USBObj;
-USBD_HandleTypeDef hUsbDeviceFS;
+
+USBD_HandleTypeDef hUsbDevice;
+
 
 osMutexId USBTxMutexHandle;
 osMutexId USBRxMutexHandle;
@@ -43,6 +46,7 @@ osMutexDef(USBRxMutex);
 
 /* STM32Cube HAL function prototypes */
 void OTG_FS_IRQHandler(void);
+void OTG_HS_IRQHandler(void);
 
 #ifdef __cplusplus
 }
@@ -66,14 +70,21 @@ void USBInstance::Initialization(void)
 	USBTxMutexHandle = osMutexCreate(osMutex(USBTxMutex));
 	USBRxMutexHandle = osMutexCreate(osMutex(USBRxMutex));
 
+#ifdef USB_FS_SPEED
 	/* Init Device Library,Add Supported Class and Start the library*/
-	USBD_Init(&hUsbDeviceFS, &FS_Desc, DEVICE_FS);
+	USBD_Init(&hUsbDevice, &FS_Desc, DEVICE_FS);
+#endif
 
-	USBD_RegisterClass(&hUsbDeviceFS, &USBD_CDC);
+#ifdef USB_HS_SPEED
+    /* Init Device Library,Add Supported Class and Start the library*/
+    USBD_Init(&hUsbDevice, &HS_Desc, DEVICE_HS);
+#endif
 
-	USBD_CDC_RegisterInterface(&hUsbDeviceFS, &USBD_Interface_fops_FS);
+    USBD_RegisterClass(&hUsbDevice, &USBD_CDC);
 
-	USBD_Start(&hUsbDeviceFS);
+    USBD_CDC_RegisterInterface(&hUsbDevice, &USBD_Interface_fops);
+
+    USBD_Start(&hUsbDevice);
 }
 
 void USBInstance::Configuration(unsigned int command, void* arg)
@@ -94,7 +105,7 @@ unsigned int USBInstance::Write(char *source, unsigned int size)
 
 	osMutexWait(USBTxMutexHandle, 0);
 	/* wait until the last message has been sent and set the new buffer */
-	while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+	while (CDC_Transmit((uint8_t *)pTemp, size) != USBD_OK);
 	osMutexRelease (USBTxMutexHandle);
 
 	return result;
@@ -151,7 +162,7 @@ unsigned int USBInstance::Print(const char* source)
 	{
 		strcpy(pTemp, source);
 
-		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+		while (CDC_Transmit((uint8_t *)pTemp, size) != USBD_OK);
 
 		result = size;
 
@@ -215,7 +226,7 @@ unsigned int USBInstance::Println(const char* source)
 
 		size = strlen(pTemp);
 
-		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+		while (CDC_Transmit((uint8_t *)pTemp, size) != USBD_OK);
 
 		result = size;
 
@@ -247,12 +258,14 @@ unsigned int USBInstance::Println(int source)
 */
 void OTG_FS_IRQHandler(void)
 {
-  /* USER CODE BEGIN OTG_FS_IRQn 0 */
-
-  /* USER CODE END OTG_FS_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
-  /* USER CODE BEGIN OTG_FS_IRQn 1 */
+}
 
-  /* USER CODE END OTG_FS_IRQn 1 */
+/**
+* @brief This function handles USB On The Go HS global interrupt.
+*/
+void OTG_HS_IRQHandler(void)
+{
+  HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
 }
 

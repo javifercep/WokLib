@@ -84,7 +84,7 @@
 /** @defgroup USBD_AUDIO_IF_Exported_Variables
   * @{
   */ 
-extern USBD_CDC_ItfTypeDef  USBD_Interface_fops_FS;
+extern USBD_CDC_ItfTypeDef  USBD_Interface_fops;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 /* USER CODE END EXPORTED_VARIABLES */
@@ -96,7 +96,7 @@ extern USBD_CDC_ItfTypeDef  USBD_Interface_fops_FS;
 /** @defgroup USBD_CDC_IF_Exported_FunctionsPrototype
   * @{
   */ 
-uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len);
+uint8_t CDC_Transmit(uint8_t* Buf, uint16_t Len);
 
 /* USER CODE BEGIN EXPORTED_FUNCTIONS */
 /* USER CODE END EXPORTED_FUNCTIONS */

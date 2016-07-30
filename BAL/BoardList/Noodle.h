@@ -259,6 +259,8 @@
 #define SPINSS1                         PIN8
 
 /* USB defines ********/
+#define USB_HS_SPEED
+
 #define NUMBER_OF_USB_CLASS				1
 
 #if NUMBER_OF_USB_CLASS > 0

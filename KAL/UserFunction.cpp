@@ -41,6 +41,7 @@ static void UserLoopTask(void const * argument)
   for (;;)
   {
     osDelay(1000);
+    USBObj.Println("Hello!");
     LEDS.Toggle(LED3);
     LEDS.Toggle(LED4);
   }

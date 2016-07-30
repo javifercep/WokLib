@@ -58,7 +58,7 @@ void BoardInstance::Initialization(void)
  	//USARTObj2.Initialization(USART_MODULE_2, DFLT_USART_BAUDRATE);
  	//ADCObj.Initialization();
  	//uSD.Initialization();
- 	//USBObj.Initialization();
+ 	USBObj.Initialization();
 }
 
 /** System Clock Configuration
