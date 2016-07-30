@@ -21,6 +21,8 @@
 
 /* private defines	  ------------------------------------------------------------*/
 
+/* Exportec variables ------------------------------------------------------------*/
+extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* private variables	  --------------------------------------------------------*/
 extern Queue USBRxQueue;
 
@@ -34,6 +36,18 @@ osMutexDef(USBTxMutex);
 osMutexDef(USBRxMutex);
 
 /* private variables	  --------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+/* STM32Cube HAL function prototypes */
+void OTG_FS_IRQHandler(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 /* USB Device Core handle declaration */
 USBInstance::USBInstance(void)
 {
@@ -125,6 +139,28 @@ unsigned int USBInstance::Print(char* source)
 	return result;
 }
 
+unsigned int USBInstance::Print(const char* source)
+{
+	char *pTemp;
+	unsigned int result = 0;
+	unsigned int size = strlen(source);
+
+	pTemp = (char* )pvPortMalloc(strlen(source));
+
+	if(pTemp != NULL)
+	{
+		strcpy(pTemp, source);
+
+		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+
+		result = size;
+
+		vPortFree(pTemp);
+	}
+
+	return result;
+}
+
 unsigned int USBInstance::Print(int source)
 {
 	char pTemp[4];
@@ -164,6 +200,32 @@ unsigned int USBInstance::Println(char* source)
 	return result;
 }
 
+unsigned int USBInstance::Println(const char* source)
+{
+	char *pTemp;
+	unsigned int result = 0;
+	unsigned int size = 0;
+
+	pTemp = (char *) pvPortMalloc(strlen(source) + 2);
+
+	if (pTemp != NULL)
+	{
+		strcpy(pTemp, source);
+		strcat(pTemp, "\n");
+
+		size = strlen(pTemp);
+
+		while (CDC_Transmit_FS((uint8_t *)pTemp, size) != USBD_OK);
+
+		result = size;
+
+
+		vPortFree(pTemp);
+	}
+
+	return result;
+}
+
 unsigned int USBInstance::Println(int source)
 {
 	char pTemp[6];
@@ -178,5 +240,19 @@ unsigned int USBInstance::Println(int source)
 	}
 
 	return result;
+}
+
+/**
+* @brief This function handles USB On The Go FS global interrupt.
+*/
+void OTG_FS_IRQHandler(void)
+{
+  /* USER CODE BEGIN OTG_FS_IRQn 0 */
+
+  /* USER CODE END OTG_FS_IRQn 0 */
+  HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
+  /* USER CODE BEGIN OTG_FS_IRQn 1 */
+
+  /* USER CODE END OTG_FS_IRQn 1 */
 }
 

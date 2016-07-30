@@ -9,11 +9,7 @@
 #define BAPI_H_
 
 /* Includes ------------------------------------------------------------------*/
-#ifdef KRAKOSKI_BOARD
-#include "Krakoski.h"
-#elif NOODLE_BOARD
-#include "Noodleboard.h"
-#endif
+#include "BoardSelection.h"
 
 #if NUMBER_OF_GPIO > 0
 #include "GPIO/GPIO.h"
@@ -27,8 +23,16 @@
 #include "ADC/ADC.h"
 #endif
 
+#if NUMBER_OF_PWM > 0
+#include "PWM/PWM.h"
+#endif
+
 #if NUMBER_OF_USART > 0
 #include "USART/USART.h"
+#endif
+
+#if NUMBER_OF_SPI > 0
+#include "SPI/SPI.h"
 #endif
 
 #if NUMBER_OF_USB_CLASS > 0
@@ -38,6 +42,11 @@
 #if RTOS_SUPPORTED != 0
 #include "RTOS/RTOS.h"
 #endif
+
+#if SD_SUPPORTED != 0
+#include "uSD/uSD.h"
+#endif
+
 
 /* Exported typedef ------------------------------------------------------------*/
 

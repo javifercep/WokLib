@@ -20,7 +20,7 @@ int main(void)
   /* Board and KAPI initialization. */
   Board.Initialization();
 
-  UserFunctionSetup();
+  UserSetupTask();
 
   RTOS.Initialization();
 

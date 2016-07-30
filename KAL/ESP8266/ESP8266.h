@@ -12,10 +12,19 @@
 #include "BAPI.h"
 
 /* Exported define ------------------------------------------------------------*/
+#ifdef KRAKOSKI_BOARD
 #define ESP_CE			PIN7
 #define ESP_RST			PINRST_ESP
 #define ESP_GPIO0		PINA4
 #define ESP_GPIO2		PIN4
+#endif
+
+#ifdef NOODLE_BOARD
+#define ESP_CE          PIN7
+#define ESP_RST         PIN8
+#define ESP_GPIO0       PIN6
+#define ESP_GPIO2       PIN5
+#endif
 
 #define ESP_USART		USART_MODULE_1
 #define USARTInst		USARTObj1
@@ -30,8 +39,6 @@
  *       such as initializations.
  */
 class ESP8266Instance {
-private:
-	UsartInstance *USARTIns;
 public:
 	ESP8266Instance(void);
 	~ESP8266Instance(void);
