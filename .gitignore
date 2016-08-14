@@ -28,6 +28,7 @@
 *.x86_64
 *.hex
 *.map
+*.launch
 
 # Debug files
 *.dSYM/
@@ -35,3 +36,4 @@
 *.log
 
 *.lck
+*language.settings.xml

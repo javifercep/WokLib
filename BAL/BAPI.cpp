@@ -6,7 +6,6 @@
   */
 /* Includes ------------------------------------------------------------------*/
 #include "BAPI.h"
-#include "stm32f2xx_hal.h"
 
 /* Exported variables ---------------------------------------------------------*/
 extern TIM_HandleTypeDef htim6;

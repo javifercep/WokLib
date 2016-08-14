@@ -7,7 +7,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "SPI/SPI.h"
 #include "BAPI.h"
-#include "stm32f2xx.h"
 
 #include <stdio.h>
 #include <string.h>

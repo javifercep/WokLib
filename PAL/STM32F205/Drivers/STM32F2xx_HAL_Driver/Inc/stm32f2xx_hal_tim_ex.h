@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f2xx_hal_tim_ex.h
   * @author  MCD Application Team
-  * @version V1.1.2
-  * @date    11-December-2015
+  * @version V1.1.3
+  * @date    29-June-2016
   * @brief   Header file of TIM HAL Extension module.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -120,16 +120,16 @@ typedef struct
 /** @defgroup TIMEx_Remap  TIM Remap
   * @{
   */
-#define TIM_TIM2_TIM8_TRGO                     (0x00000000)
-#define TIM_TIM2_ETH_PTP                       (0x00000400)
-#define TIM_TIM2_USBFS_SOF                     (0x00000800)
-#define TIM_TIM2_USBHS_SOF                     (0x00000C00)
-#define TIM_TIM5_GPIO                          (0x00000000)
-#define TIM_TIM5_LSI                           (0x00000040)
-#define TIM_TIM5_LSE                           (0x00000080)
-#define TIM_TIM5_RTC                           (0x000000C0)
-#define TIM_TIM11_GPIO                         (0x00000000)
-#define TIM_TIM11_HSE                          (0x00000002)
+#define TIM_TIM2_TIM8_TRGO                     (0x00000000U)
+#define TIM_TIM2_ETH_PTP                       (0x00000400U)
+#define TIM_TIM2_USBFS_SOF                     (0x00000800U)
+#define TIM_TIM2_USBHS_SOF                     (0x00000C00U)
+#define TIM_TIM5_GPIO                          (0x00000000U)
+#define TIM_TIM5_LSI                           (0x00000040U)
+#define TIM_TIM5_LSE                           (0x00000080U)
+#define TIM_TIM5_RTC                           (0x000000C0U)
+#define TIM_TIM11_GPIO                         (0x00000000U)
+#define TIM_TIM11_HSE                          (0x00000002U)
 
 /**
   * @}
@@ -276,7 +276,7 @@ HAL_TIM_StateTypeDef HAL_TIMEx_HallSensor_GetState(TIM_HandleTypeDef* htim);
                                   ((TIM_REMAP) == TIM_TIM11_GPIO)||\
                                   ((TIM_REMAP) == TIM_TIM11_HSE))
 
-#define IS_TIM_DEADTIME(DEADTIME)      ((DEADTIME) <= 0xFF) 
+#define IS_TIM_DEADTIME(DEADTIME)      ((DEADTIME) <= 0xFFU) 
 /**
   * @}
   */  

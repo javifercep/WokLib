@@ -9,9 +9,9 @@
 #define SPI_H_
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f2xx.h"
 #include "RTOS/RTOS.h"
 #include "TOOLS/BufferFunctions.h"
-#include "stm32f2xx_hal.h"
 
 /* Exported define ------------------------------------------------------------*/
 #define SPI_MODULE_1  0

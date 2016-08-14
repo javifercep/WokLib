@@ -9,7 +9,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "GPIO.h"
 #include "BAPI.h"
-#include "stm32f2xx_hal.h"
 
 /* Exported variables	  --------------------------------------------------------*/
 GPIOInstance GPIO;

@@ -11,7 +11,7 @@
 #define __ADC_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f2xx_hal.h"
+#include "stm32f2xx.h"
 
 /* Exported defines	  --------------------------------------------------------*/
 #define NUMBER_OF_ADC_CHANNEL 6

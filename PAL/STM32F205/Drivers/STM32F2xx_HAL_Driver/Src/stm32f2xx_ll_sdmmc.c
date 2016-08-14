@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f2xx_ll_sdmmc.c
   * @author  MCD Application Team
-  * @version V1.1.2
-  * @date    11-December-2015
+  * @version V1.1.3
+  * @date    29-June-2016
   * @brief   SDMMC Low Layer HAL module driver.
   *    
   *          This file provides firmware functions to manage the following 
@@ -138,7 +138,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -212,7 +212,7 @@
   */
 HAL_StatusTypeDef SDIO_Init(SDIO_TypeDef *SDIOx, SDIO_InitTypeDef Init)
 {
-  uint32_t tmpreg = 0; 
+  uint32_t tmpreg = 0U; 
 
   /* Check the parameters */
   assert_param(IS_SDIO_ALL_INSTANCE(SDIOx));
@@ -322,7 +322,7 @@ HAL_StatusTypeDef SDIO_PowerState_ON(SDIO_TypeDef *SDIOx)
 HAL_StatusTypeDef SDIO_PowerState_OFF(SDIO_TypeDef *SDIOx)
 {
   /* Set power state to OFF */
-  SDIOx->POWER = (uint32_t)0x00000000;
+  SDIOx->POWER = (uint32_t)0x00000000U;
   
   return HAL_OK;
 }
@@ -351,7 +351,7 @@ uint32_t SDIO_GetPowerState(SDIO_TypeDef *SDIOx)
   */
 HAL_StatusTypeDef SDIO_SendCommand(SDIO_TypeDef *SDIOx, SDIO_CmdInitTypeDef *SDIO_CmdInitStruct)
 {
-  uint32_t tmpreg = 0;
+  uint32_t tmpreg = 0U;
   
   /* Check the parameters */
   assert_param(IS_SDIO_CMD_INDEX(SDIO_CmdInitStruct->CmdIndex));
@@ -397,7 +397,7 @@ uint8_t SDIO_GetCommandResponse(SDIO_TypeDef *SDIOx)
   */
 uint32_t SDIO_GetResponse(uint32_t SDIO_RESP)
 {
-  __IO uint32_t tmp = 0;
+  __IO uint32_t tmp = 0U;
 
   /* Check the parameters */
   assert_param(IS_SDIO_RESP(SDIO_RESP));
@@ -418,7 +418,7 @@ uint32_t SDIO_GetResponse(uint32_t SDIO_RESP)
   */
 HAL_StatusTypeDef SDIO_DataConfig(SDIO_TypeDef *SDIOx, SDIO_DataInitTypeDef* SDIO_DataInitStruct)
 {
-  uint32_t tmpreg = 0;
+  uint32_t tmpreg = 0U;
   
   /* Check the parameters */
   assert_param(IS_SDIO_DATA_LENGTH(SDIO_DataInitStruct->DataLength));

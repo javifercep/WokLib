@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f2xx_hal_rcc_ex.h
   * @author  MCD Application Team
-  * @version V1.1.2
-  * @date    11-December-2015
+  * @version V1.1.3
+  * @date    29-June-2016
   * @brief   Header file of RCC HAL Extension module.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -55,7 +55,7 @@
   */ 
 
 /* Exported types ------------------------------------------------------------*/
-/** @defgroup RCCEx_Exported_Types RCC Exported Types
+/** @defgroup RCCEx_Exported_Types RCCEx Exported Types
   * @{
   */
 /** 
@@ -96,7 +96,7 @@ typedef struct
   */
 
 /* Exported constants --------------------------------------------------------*/
-/** @defgroup RCCEx_Exported_Constants RCC Exported Constants
+/** @defgroup RCCEx_Exported_Constants RCCEx Exported Constants
   * @{
   */
 
@@ -183,11 +183,16 @@ typedef struct
 #define __HAL_RCC_ETHMACTX_IS_CLK_ENABLED()  ((RCC->AHB1ENR &(RCC_AHB1ENR_ETHMACTXEN))!= RESET)
 #define __HAL_RCC_ETHMACRX_IS_CLK_ENABLED()  ((RCC->AHB1ENR &(RCC_AHB1ENR_ETHMACRXEN))!= RESET)
 #define __HAL_RCC_ETHMACPTP_IS_CLK_ENABLED() ((RCC->AHB1ENR &(RCC_AHB1ENR_ETHMACPTPEN))!= RESET) 
-
+#define __HAL_RCC_ETH_IS_CLK_ENABLED()        (__HAL_RCC_ETHMAC_IS_CLK_ENABLED()   && \
+                                               __HAL_RCC_ETHMACTX_IS_CLK_ENABLED() && \
+	                                       __HAL_RCC_ETHMACRX_IS_CLK_ENABLED())
 #define __HAL_RCC_ETHMAC_IS_CLK_DISABLED()    ((RCC->AHB1ENR &(RCC_AHB1ENR_ETHMACEN))== RESET)
 #define __HAL_RCC_ETHMACTX_IS_CLK_DISABLED()  ((RCC->AHB1ENR &(RCC_AHB1ENR_ETHMACTXEN))== RESET)
 #define __HAL_RCC_ETHMACRX_IS_CLK_DISABLED()  ((RCC->AHB1ENR &(RCC_AHB1ENR_ETHMACRXEN))== RESET)
 #define __HAL_RCC_ETHMACPTP_IS_CLK_DISABLED() ((RCC->AHB1ENR &(RCC_AHB1ENR_ETHMACPTPEN))== RESET)
+#define __HAL_RCC_ETH_IS_CLK_DISABLED()        (__HAL_RCC_ETHMAC_IS_CLK_DISABLED()   && \
+                                                __HAL_RCC_ETHMACTX_IS_CLK_DISABLED() && \
+	                                        __HAL_RCC_ETHMACRX_IS_CLK_DISABLED())
 /**
   * @}
   */ 

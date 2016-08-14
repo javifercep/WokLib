@@ -11,7 +11,7 @@
 #define __GPIO_H
 
 /* Includes ------------------------------------------------------------------*/
-
+#include "stm32f2xx.h"
 /* Exported defines	  --------------------------------------------------------*/
 /* Standard configuration of the GPIO */
 #define INPUT INPUT_PULLUP

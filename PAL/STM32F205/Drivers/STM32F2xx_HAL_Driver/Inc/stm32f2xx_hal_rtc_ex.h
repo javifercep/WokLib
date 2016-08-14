@@ -2,13 +2,13 @@
   ******************************************************************************
   * @file    stm32f2xx_hal_rtc_ex.h
   * @author  MCD Application Team
-  * @version V1.1.2
-  * @date    11-December-2015
+  * @version V1.1.3
+  * @date    29-June-2016
   * @brief   Header file of RTC HAL Extension module.
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -84,26 +84,26 @@ typedef struct
 /** @defgroup RTCEx_Backup_Registers_Definitions RTC Backup Registers Definitions
   * @{
   */
-#define RTC_BKP_DR0                       ((uint32_t)0x00000000)
-#define RTC_BKP_DR1                       ((uint32_t)0x00000001)
-#define RTC_BKP_DR2                       ((uint32_t)0x00000002)
-#define RTC_BKP_DR3                       ((uint32_t)0x00000003)
-#define RTC_BKP_DR4                       ((uint32_t)0x00000004)
-#define RTC_BKP_DR5                       ((uint32_t)0x00000005)
-#define RTC_BKP_DR6                       ((uint32_t)0x00000006)
-#define RTC_BKP_DR7                       ((uint32_t)0x00000007)
-#define RTC_BKP_DR8                       ((uint32_t)0x00000008)
-#define RTC_BKP_DR9                       ((uint32_t)0x00000009)
-#define RTC_BKP_DR10                      ((uint32_t)0x0000000A)
-#define RTC_BKP_DR11                      ((uint32_t)0x0000000B)
-#define RTC_BKP_DR12                      ((uint32_t)0x0000000C)
-#define RTC_BKP_DR13                      ((uint32_t)0x0000000D)
-#define RTC_BKP_DR14                      ((uint32_t)0x0000000E)
-#define RTC_BKP_DR15                      ((uint32_t)0x0000000F)
-#define RTC_BKP_DR16                      ((uint32_t)0x00000010)
-#define RTC_BKP_DR17                      ((uint32_t)0x00000011)
-#define RTC_BKP_DR18                      ((uint32_t)0x00000012)
-#define RTC_BKP_DR19                      ((uint32_t)0x00000013)
+#define RTC_BKP_DR0                       ((uint32_t)0x00000000U)
+#define RTC_BKP_DR1                       ((uint32_t)0x00000001U)
+#define RTC_BKP_DR2                       ((uint32_t)0x00000002U)
+#define RTC_BKP_DR3                       ((uint32_t)0x00000003U)
+#define RTC_BKP_DR4                       ((uint32_t)0x00000004U)
+#define RTC_BKP_DR5                       ((uint32_t)0x00000005U)
+#define RTC_BKP_DR6                       ((uint32_t)0x00000006U)
+#define RTC_BKP_DR7                       ((uint32_t)0x00000007U)
+#define RTC_BKP_DR8                       ((uint32_t)0x00000008U)
+#define RTC_BKP_DR9                       ((uint32_t)0x00000009U)
+#define RTC_BKP_DR10                      ((uint32_t)0x0000000AU)
+#define RTC_BKP_DR11                      ((uint32_t)0x0000000BU)
+#define RTC_BKP_DR12                      ((uint32_t)0x0000000CU)
+#define RTC_BKP_DR13                      ((uint32_t)0x0000000DU)
+#define RTC_BKP_DR14                      ((uint32_t)0x0000000EU)
+#define RTC_BKP_DR15                      ((uint32_t)0x0000000FU)
+#define RTC_BKP_DR16                      ((uint32_t)0x00000010U)
+#define RTC_BKP_DR17                      ((uint32_t)0x00000011U)
+#define RTC_BKP_DR18                      ((uint32_t)0x00000012U)
+#define RTC_BKP_DR19                      ((uint32_t)0x00000013U)
 /**
   * @}
   */ 
@@ -111,8 +111,8 @@ typedef struct
 /** @defgroup RTCEx_Time_Stamp_Edges_definitions RTC TimeStamp Edges Definitions
   * @{
   */ 
-#define RTC_TIMESTAMPEDGE_RISING          ((uint32_t)0x00000000)
-#define RTC_TIMESTAMPEDGE_FALLING         ((uint32_t)0x00000008)
+#define RTC_TIMESTAMPEDGE_RISING          ((uint32_t)0x00000000U)
+#define RTC_TIMESTAMPEDGE_FALLING         ((uint32_t)0x00000008U)
 /**
   * @}
   */
@@ -128,8 +128,8 @@ typedef struct
 /** @defgroup RTCEx_Tamper_Pins_Selection RTC tamper Pins Selection
   * @{
   */ 
-#define RTC_TAMPERPIN_DEFAULT               ((uint32_t)0x00000000)
-#define RTC_TAMPERPIN_POS1                  ((uint32_t)0x00010000)
+#define RTC_TAMPERPIN_DEFAULT               ((uint32_t)0x00000000U)
+#define RTC_TAMPERPIN_POS1                  ((uint32_t)0x00010000U)
 
 /**
   * @}
@@ -138,8 +138,8 @@ typedef struct
 /** @defgroup RTCEx_TimeStamp_Pin_Selection RTC TimeStamp Pins Selection
   * @{
   */ 
-#define RTC_TIMESTAMPPIN_DEFAULT            ((uint32_t)0x00000000)
-#define RTC_TIMESTAMPPIN_POS1               ((uint32_t)0x00020000)
+#define RTC_TIMESTAMPPIN_DEFAULT            ((uint32_t)0x00000000U)
+#define RTC_TIMESTAMPPIN_POS1               ((uint32_t)0x00020000U)
 
 /**
   * @}
@@ -148,8 +148,8 @@ typedef struct
 /** @defgroup RTCEx_Tamper_Trigger_Definitions RTC Tamper Triggers Definitions
   * @{
   */ 
-#define RTC_TAMPERTRIGGER_RISINGEDGE       ((uint32_t)0x00000000)
-#define RTC_TAMPERTRIGGER_FALLINGEDGE      ((uint32_t)0x00000002)
+#define RTC_TAMPERTRIGGER_RISINGEDGE       ((uint32_t)0x00000000U)
+#define RTC_TAMPERTRIGGER_FALLINGEDGE      ((uint32_t)0x00000002U)
 
 /**
   * @}
@@ -158,12 +158,12 @@ typedef struct
 /** @defgroup RTCEx_Wakeup_Timer_Definitions RTC Wake-up Timer Definitions
   * @{
   */ 
-#define RTC_WAKEUPCLOCK_RTCCLK_DIV16        ((uint32_t)0x00000000)
-#define RTC_WAKEUPCLOCK_RTCCLK_DIV8         ((uint32_t)0x00000001)
-#define RTC_WAKEUPCLOCK_RTCCLK_DIV4         ((uint32_t)0x00000002)
-#define RTC_WAKEUPCLOCK_RTCCLK_DIV2         ((uint32_t)0x00000003)
-#define RTC_WAKEUPCLOCK_CK_SPRE_16BITS      ((uint32_t)0x00000004)
-#define RTC_WAKEUPCLOCK_CK_SPRE_17BITS      ((uint32_t)0x00000006)
+#define RTC_WAKEUPCLOCK_RTCCLK_DIV16        ((uint32_t)0x00000000U)
+#define RTC_WAKEUPCLOCK_RTCCLK_DIV8         ((uint32_t)0x00000001U)
+#define RTC_WAKEUPCLOCK_RTCCLK_DIV4         ((uint32_t)0x00000002U)
+#define RTC_WAKEUPCLOCK_RTCCLK_DIV2         ((uint32_t)0x00000003U)
+#define RTC_WAKEUPCLOCK_CK_SPRE_16BITS      ((uint32_t)0x00000004U)
+#define RTC_WAKEUPCLOCK_CK_SPRE_17BITS      ((uint32_t)0x00000006U)
 /**
   * @}
   */ 
@@ -171,8 +171,8 @@ typedef struct
 /** @defgroup RTCEx_Digital_Calibration_Definitions RTC Digital Calib Definitions
   * @{
   */ 
-#define RTC_CALIBSIGN_POSITIVE            ((uint32_t)0x00000000) 
-#define RTC_CALIBSIGN_NEGATIVE            ((uint32_t)0x00000080)
+#define RTC_CALIBSIGN_POSITIVE            ((uint32_t)0x00000000U) 
+#define RTC_CALIBSIGN_NEGATIVE            ((uint32_t)0x00000080U)
 /**
   * @}
   */
@@ -233,7 +233,7 @@ typedef struct
   *            @arg RTC_IT_WUT:  WakeUpTimer A interrupt
   * @retval None
   */
-#define __HAL_RTC_WAKEUPTIMER_GET_IT(__HANDLE__, __INTERRUPT__)            (((((__HANDLE__)->Instance->ISR) & ((__INTERRUPT__)>> 4)) != RESET)? SET : RESET)
+#define __HAL_RTC_WAKEUPTIMER_GET_IT(__HANDLE__, __INTERRUPT__)            (((((__HANDLE__)->Instance->ISR) & ((__INTERRUPT__)>> 4U)) != RESET)? SET : RESET)
 
 /**
   * @brief  Check whether the specified RTC Wake Up timer interrupt has been enabled or not.
@@ -400,7 +400,7 @@ typedef struct
   *            @arg RTC_IT_TS: TimeStamp interrupt
   * @retval None
   */
-#define __HAL_RTC_TIMESTAMP_GET_IT(__HANDLE__, __INTERRUPT__)         (((((__HANDLE__)->Instance->ISR) & ((__INTERRUPT__)>> 4)) != RESET)? SET : RESET)
+#define __HAL_RTC_TIMESTAMP_GET_IT(__HANDLE__, __INTERRUPT__)         (((((__HANDLE__)->Instance->ISR) & ((__INTERRUPT__)>> 4U)) != RESET)? SET : RESET)
 
 /**
   * @brief  Check whether the specified RTC Time Stamp interrupt has been enabled or not.
@@ -464,7 +464,7 @@ typedef struct
   *            @arg  RTC_IT_TAMP1
   * @retval None
   */
-#define __HAL_RTC_TAMPER_GET_IT(__HANDLE__, __INTERRUPT__)       (((((__HANDLE__)->Instance->ISR) & ((__INTERRUPT__)>> 4)) != RESET)? SET : RESET)
+#define __HAL_RTC_TAMPER_GET_IT(__HANDLE__, __INTERRUPT__)       (((((__HANDLE__)->Instance->ISR) & ((__INTERRUPT__)>> 4U)) != RESET)? SET : RESET)
 
 /**
   * @brief  Check whether the specified RTC Tamper interrupt has been enabled or not.
@@ -777,12 +777,12 @@ HAL_StatusTypeDef HAL_RTCEx_PollForAlarmBEvent(RTC_HandleTypeDef *hrtc, uint32_t
                                     ((CLOCK) == RTC_WAKEUPCLOCK_CK_SPRE_16BITS) || \
                                     ((CLOCK) == RTC_WAKEUPCLOCK_CK_SPRE_17BITS))
 
-#define IS_RTC_WAKEUP_COUNTER(COUNTER)  ((COUNTER) <= 0xFFFF)
+#define IS_RTC_WAKEUP_COUNTER(COUNTER)  ((COUNTER) <= 0xFFFFU)
 #define IS_RTC_CALIB_SIGN(SIGN) (((SIGN) == RTC_CALIBSIGN_POSITIVE) || \
                                  ((SIGN) == RTC_CALIBSIGN_NEGATIVE))
 
-#define IS_RTC_CALIB_VALUE(VALUE) ((VALUE) < 0x20)
-#define IS_RTC_TAMPER(TAMPER) ((((TAMPER) & ((uint32_t)!(RTC_TAFCR_TAMP1E))) == 0x00) && ((TAMPER) != (uint32_t)RESET)) 
+#define IS_RTC_CALIB_VALUE(VALUE) ((VALUE) < 0x20U)
+#define IS_RTC_TAMPER(TAMPER) ((((TAMPER) & ((uint32_t)!(RTC_TAFCR_TAMP1E))) == 0x00U) && ((TAMPER) != (uint32_t)RESET)) 
 /**
   * @}
   */

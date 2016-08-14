@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32f2xx_hal_pwr_ex.c
   * @author  MCD Application Team
-  * @version V1.1.2
-  * @date    11-December-2015
+  * @version V1.1.3
+  * @date    29-June-2016
   * @brief   Extended PWR HAL module driver.
   *          This file provides firmware functions to manage the following 
   *          functionalities of PWR extension peripheral:           
@@ -12,7 +12,7 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
+  * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -58,7 +58,7 @@
 /** @addtogroup PWREx_Private_Constants
   * @{
   */    
-#define PWR_BKPREG_TIMEOUT_VALUE     1000
+#define PWR_BKPREG_TIMEOUT_VALUE     1000U
 /**
   * @}
   */
@@ -124,7 +124,7 @@
   */
 HAL_StatusTypeDef HAL_PWREx_EnableBkUpReg(void)
 {
-  uint32_t tickstart = 0;
+  uint32_t tickstart = 0U;
 
   *(__IO uint32_t *) CSR_BRE_BB = (uint32_t)ENABLE;
 
@@ -148,7 +148,7 @@ HAL_StatusTypeDef HAL_PWREx_EnableBkUpReg(void)
   */
 HAL_StatusTypeDef HAL_PWREx_DisableBkUpReg(void)
 {
-  uint32_t tickstart = 0;
+  uint32_t tickstart = 0U;
 
   *(__IO uint32_t *) CSR_BRE_BB = (uint32_t)DISABLE;
 

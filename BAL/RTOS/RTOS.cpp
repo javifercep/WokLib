@@ -8,7 +8,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "BAPI.h"
-#include "stm32f2xx_hal.h"
 #include "task.h"
 #include <string.h>
 

@@ -10,7 +10,6 @@
 #include "LEDS.h"
 #include "GPIO/GPIO.h"
 #include "BAPI.h"
-#include "stm32f2xx_hal.h"
 /* Exported variables	  --------------------------------------------------------*/
 LEDSInstance LEDS;
 

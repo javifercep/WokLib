@@ -10,6 +10,7 @@
 #define __RTOS_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32f2xx.h"
 #include "FreeRTOS.h"
 #include "cmsis_os.h"
 

@@ -8,7 +8,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "BAPI.h"
-#include "stm32f2xx_hal.h"
 
 /* Private defines	  --------------------------------------------------------*/
 #define	DEFAULT_PWM_PRESCALER   3		/* 0,1 us every tick */
